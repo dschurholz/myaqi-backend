@@ -1,0 +1,52 @@
+from .models import (
+    AtmosphericPressureHourly,
+    COHourly,
+    HumidityHourly,
+    NO2Hourly,
+    O3Hourly,
+    Pm10Hourly,
+    Pm25Hourly,
+    SO2Hourly,
+    TemparatureHourly,
+    WindHourly,
+)
+
+COMMAND_MODEL_MAP = (
+    ('atmospheric_pressure_hourly', AtmosphericPressureHourly),
+    ('co_hourly', COHourly),
+    ('humidity_hourly', HumidityHourly),
+    ('no2_hourly', NO2Hourly),
+    ('o3_hourly', O3Hourly),
+    ('pm10_hourly', Pm10Hourly),
+    ('pm25_hourly', Pm25Hourly),
+    ('so2_hourly', SO2Hourly),
+    ('temperature_hourly', TemparatureHourly),
+    ('wind_hourly', WindHourly),
+)
+
+GENERAL_TABLE_FIELD_MAP = (
+    ("State Code", 'state_code'),
+    ("County Code", 'county_code'),
+    ("Site Num", 'site_num'),
+    ("Parameter Code", 'parameter_code'),
+    ("POC", 'poc'),
+    ("Latitude", 'latitude'),
+    ("Longitude", 'longitude'),
+    ("Datum", 'datum'),
+    ("Parameter Name", 'parameter_name'),
+    ("Date Local", 'date_local'),
+    ("Time Local", 'time_local'),
+    ("Date GMT", 'date_gmt'),
+    ("Time GMT", 'time_gmt'),
+    ("Sample Measurement", 'sample_measurement'),
+    ("Units of Measure", 'units_of_measure'),
+    ("MDL", 'mdl'),
+    ("Uncertainty", 'unceirtanty'),
+    ("Qualifier", 'qualifier'),
+    ("Method Type", 'method_type'),
+    ("Method Code", 'method_code'),
+    ("Method Name", 'method_name'),
+    ("State Name", 'state_name'),
+    ("County Name", 'county_name'),
+    ("Date of Last Change", 'date_of_last_change')
+)

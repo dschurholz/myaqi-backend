@@ -1,0 +1,7 @@
+aqi_backend/aqi_backend/settings_local.py
+/**/__pycache__/
+*.pyc
+*.sublime-project
+*.sublime-workspace
+logs/**/*.log
+/**/.DS_Store
