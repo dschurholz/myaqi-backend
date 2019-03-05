@@ -76,8 +76,8 @@ class Migration(migrations.Migration):
                 ('date_of_last_change', models.DateField(blank=True, null=True, verbose_name='Date of last change')),
             ],
             options={
-                'verbose_name': 'CO2 Hourly Measurement',
-                'verbose_name_plural': 'CO2 Hourly Measurements',
+                'verbose_name': 'CO Hourly Measurement',
+                'verbose_name_plural': 'CO Hourly Measurements',
                 'db_table': 'co2_hourly',
             },
         ),

@@ -12,6 +12,7 @@ from .models import (
 ENTRIES = 'entries'
 ENTRIES_COUNT = 'entries_count'
 EQUIPMENT_TYPE = 'equipment_type'
+FIRES = 'fires'
 FOREIGN_KEY = 'foreign_key'
 FOREIGN_KEY_SELF = 'foreign_key_self'
 INCIDENT_SITE = 'incident_site'
@@ -35,7 +36,8 @@ AU_VIC_URL_MAP = (
     (MONITOR, 'http://sciwebsvc.epa.vic.gov.au/aqapi/Monitors'),
     (SITE, 'http://sciwebsvc.epa.vic.gov.au/aqapi/Sites'),
     (TIME_BASIS, 'http://sciwebsvc.epa.vic.gov.au/aqapi/Timebasis'),
-    (MEASUREMENT, 'http://sciwebsvc.epa.vic.gov.au/aqapi/Measurements')
+    (MEASUREMENT, 'http://sciwebsvc.epa.vic.gov.au/aqapi/Measurements'),
+    (FIRES, 'http://emergency.vic.gov.au/public/osom-geojson.json')
 )
 
 COMMAND_MODEL_MAP = (

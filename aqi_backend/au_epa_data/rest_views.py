@@ -55,3 +55,23 @@ class MeasurementsProxy(APIView):
         headers = {'content-type': 'application/json'}
         r = requests.get(url, params=request.query_params, headers=headers)
         return Response(r.json())
+
+
+class VicEmergencyProxy(APIView):
+    """
+    View to list all users in the system.
+
+    * Requires token authentication.
+    * Only admin users are able to access this view.
+    """
+    permission_classes = (AllowAny,)
+
+    def get(self, request, format=None):
+        """
+        Return a list of all users.
+        """
+
+        url = OrderedDict(AU_VIC_URL_MAP)['fires']
+        headers = {'content-type': 'application/json'}
+        r = requests.get(url, params=request.query_params, headers=headers)
+        return Response(r.json())
