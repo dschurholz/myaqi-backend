@@ -31,13 +31,15 @@ SITES = 'sites'
 TABLE_STRUCTURE = 'table_structure'
 TIME_BASIS = 'time_basis'
 UNIQUE_PARAMS = 'unique_params'
+VIC_ROADS_LIVE = 'vic_roads_live'
 
 AU_VIC_URL_MAP = (
     (MONITOR, 'http://sciwebsvc.epa.vic.gov.au/aqapi/Monitors'),
     (SITE, 'http://sciwebsvc.epa.vic.gov.au/aqapi/Sites'),
     (TIME_BASIS, 'http://sciwebsvc.epa.vic.gov.au/aqapi/Timebasis'),
     (MEASUREMENT, 'http://sciwebsvc.epa.vic.gov.au/aqapi/Measurements'),
-    (FIRES, 'http://emergency.vic.gov.au/public/osom-geojson.json')
+    (FIRES, 'http://emergency.vic.gov.au/public/osom-geojson.json'),
+    (VIC_ROADS_LIVE, 'https://traffic.vicroads.vic.gov.au/maps.js')
 )
 
 COMMAND_MODEL_MAP = (
@@ -219,3 +221,5 @@ SERVICES_METADATA = (
     (MEASUREMENT_MONITOR_TIME_BASIS,
         MEASUREMENT_MONITOR_TIME_BASIS_SERVICE_METADATA)
 )
+
+VIC_ROADS_MAPSJS_START = 'var preload_data = '

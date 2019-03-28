@@ -20,7 +20,8 @@ from django.conf import settings
 
 from common.views import home
 from au_epa_data.urls import router as au_epa_data_router
-from au_epa_data.rest_views import MeasurementsProxy, VicEmergencyProxy
+from au_epa_data.rest_views import (
+    MeasurementsProxy, VicEmergencyProxy, VicRoadsLiveProxy)
 
 admin.site.site_header = 'MyAQI'
 
@@ -39,7 +40,10 @@ api_urlpatterns = [
         'measurements', MeasurementsProxy.as_view(), name='measurements-proxy'
     ),
     path(
-        'fires', VicEmergencyProxy.as_view(), name='fires-proxy')
+        'fires', VicEmergencyProxy.as_view(), name='fires-proxy'
+    ),
+    path(
+        'traffic', VicRoadsLiveProxy.as_view(), name='traffic-proxy')
 ]
 
 urlpatterns = [
