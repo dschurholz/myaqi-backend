@@ -3,7 +3,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from django.db import IntegrityError
 from django.utils.text import slugify
-from ckeditor.fields import RichTextField
+
+from common.models import AQICategoryThreshold, HealthCategoryThreshold
 
 logger = logging.getLogger('myaqi')
 
@@ -206,54 +207,6 @@ class MonitorTimeBasis(models.Model):
         db_table = 'monitor_time_basis'
         verbose_name = _('Monitor Has Time Basis')
         verbose_name_plural = _('Monitor Has Time Basis')
-
-
-class HealthCategoryThreshold(models.Model):
-    level = models.PositiveSmallIntegerField(_("Level"), primary_key=True)
-    threshold_value = models.FloatField(
-        _("Threshold Value"), blank=True, null=True)
-    description = models.CharField(
-        _("Description"), max_length=63, blank=True, null=True)
-    value_range = models.CharField(
-        _("Value Range"), max_length=63, blank=True, null=True)
-    visibility = models.CharField(
-        _("Visibility"), max_length=63, blank=True, null=True)
-    message = RichTextField(_("Message"), blank=True, null=True)
-    background_colour = models.CharField(
-        _("Background Colour"), max_length=7, blank=True, null=True)
-    foreground_colour = models.CharField(
-        _("Foreground Colour"), max_length=7, blank=True, null=True)
-
-    def __str__(self):
-        return "{0}-{1}".format(self.level, self.description)
-
-    class Meta:
-        db_table = 'health_category_threshold'
-        verbose_name = _('Health Category Threshold')
-        verbose_name_plural = _('Health Category Thresholds')
-
-
-class AQICategoryThreshold(models.Model):
-    abbreviation = models.CharField(
-        _("Abbrevation"), primary_key=True, max_length=2)
-    lower_threshold_value = models.FloatField(
-        _("Lower Threshold Value"), blank=True, null=True)
-    upper_threshold_value = models.FloatField(
-        _("Upper Threshold Value"), blank=True, null=True)
-    description = models.CharField(
-        _("Description"), max_length=63, blank=True, null=True)
-    background_colour = models.CharField(
-        _("Background Colour"), max_length=7, blank=True, null=True)
-    foreground_colour = models.CharField(
-        _("Foreground Colour"), max_length=7, blank=True, null=True)
-
-    def __str__(self):
-        return self.description
-
-    class Meta:
-        db_table = 'aqi_category_threshold'
-        verbose_name = _('AQI Category Threshold')
-        verbose_name_plural = _('AQI Category Thresholds')
 
 
 class Measurement(UpdateM2MModel):

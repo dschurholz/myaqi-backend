@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import datetime
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -50,9 +51,10 @@ THIRD_PARTY_APPS = [
 ]
 
 MYAQI_APPS = [
+    'accounts',
     'au_epa_data',
+    'common',
     'epa_data',
-    'common'
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + MYAQI_APPS
@@ -88,7 +90,11 @@ TEMPLATES = [
     },
 ]
 
-DATABASE_ROUTERS = ['common.database_routers.AuthRouter', 'common.database_routers.EPADataRouter']
+DATABASE_ROUTERS = [
+    'common.database_routers.AuthRouter',
+    'common.database_routers.EPADataRouter',
+    'common.database_routers.CommonDataRouter'
+]
 
 DATETIME_INPUT_FORMATS = [
     '%Y-%m-%dT%H:%M:%S',     # '2006-10-25 14:30:59'
@@ -182,7 +188,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_PARSER_CLASSES': (
@@ -223,6 +229,12 @@ SUIT_CONFIG = {
         'accounts': 'icon-user',
         'epa_data': 'icon-globe',
     }
+}
+
+# JWT
+
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=24*3600),
 }
 
 

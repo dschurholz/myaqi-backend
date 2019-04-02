@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('au_epa_data', '0006_auto_20190215_0733'),
+        ('au_epa_data', '0004_auto_20190215_0733'),
     ]
 
     operations = [
