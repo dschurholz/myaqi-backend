@@ -1,20 +1,32 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth import get_user_model
-from collections import OrderedDict
+import nested_admin
 
-from .constants import AQI_SCALES
-from .models import UserProfile
+from .models import (
+    UserProfile, UserProfileQuestionnaireAnswer, PollutantSensitivity)
 
 UserModel = get_user_model()
 
 
-class UserProfileInline(admin.StackedInline):
+class PollutantSensitivityInline(nested_admin.NestedStackedInline):
+    model = PollutantSensitivity
+    extra = 0
+
+
+class UserProfileQuestionnaireAnswerInline(nested_admin.NestedStackedInline):
+    model = UserProfileQuestionnaireAnswer
+    extra = 0
+
+
+class UserProfileInline(nested_admin.NestedStackedInline):
     model = UserProfile
-    extra = 1
+    extra = 0
+    inlines = (
+        UserProfileQuestionnaireAnswerInline, PollutantSensitivityInline)
 
 
-class ExtendedUserAdmin(UserAdmin):
+class ExtendedUserAdmin(nested_admin.NestedModelAdmin, UserAdmin):
     inlines = (UserProfileInline, )
     list_display = (UserAdmin.list_display + (
         'get_age', 'get_colour_blindness', 'get_aqi_scale'))

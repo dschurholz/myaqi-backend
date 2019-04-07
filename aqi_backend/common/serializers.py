@@ -3,7 +3,11 @@ from rest_framework import serializers
 from .models import (
     AQIOrganization,
     AQICategoryThreshold,
-    HealthCategoryThreshold
+    HealthCategoryThreshold,
+    Pollutant,
+    ProfileQuestion,
+    ProfileQuestionAnswer,
+    ProfileAnswerPollutantIndex
 )
 
 
@@ -38,4 +42,39 @@ class AQIOrganizationSerializer(serializers.ModelSerializer):
         fields = (
             'abbreviation', 'name', 'description', 'logo',
             'health_category_thresholds', 'aqi_category_thresholds', )
+        read_only_fields = fields
+
+
+class PollutantSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Pollutant
+        fields = ('abbreviation', 'name', )
+        read_only_fields = fields
+
+
+class ProfileAnswerPollutantIndexSerializer(serializers.ModelSerializer):
+    pollutant = PollutantSerializer()
+
+    class Meta:
+        model = ProfileAnswerPollutantIndex
+        fields = ('id', 'index', 'pollutant', )
+        read_only_fields = fields
+
+
+class ProfileQuestionAnswerSerializer(serializers.ModelSerializer):
+    indexes = ProfileAnswerPollutantIndexSerializer(many=True)
+
+    class Meta:
+        model = ProfileQuestionAnswer
+        fields = ('id', 'order', 'text', 'indexes', )
+        read_only_fields = fields
+
+
+class ProfileQuestionSerializer(serializers.ModelSerializer):
+    answers = ProfileQuestionAnswerSerializer(many=True)
+
+    class Meta:
+        model = ProfileQuestion
+        fields = ('id', 'order', 'text', 'active', 'answers', )
         read_only_fields = fields

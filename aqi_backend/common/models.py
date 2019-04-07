@@ -82,3 +82,84 @@ class AQICategoryThreshold(models.Model):
         db_table = 'aqi_category_threshold'
         verbose_name = _('AQI Category Threshold')
         verbose_name_plural = _('AQI Category Thresholds')
+
+
+class Pollutant(models.Model):
+    abbreviation = models.CharField(
+        _("Abbrevation"), primary_key=True, max_length=5)
+    name = models.CharField(
+        _("Name"), max_length=63, blank=True, null=True)
+
+    def __str__(self):
+        return self.abbreviation
+
+    class Meta:
+        db_table = 'pollutant'
+        verbose_name = _('Pollutant')
+        verbose_name_plural = _('Pollutants')
+
+
+class ProfileQuestion(models.Model):
+    order = models.PositiveSmallIntegerField(
+        _('Order'), unique=True, null=True, blank=True)
+    text = RichTextField(_('Question Text'))
+    active = models.BooleanField(_('Is Active'), default=True)
+
+    def __str__(self):
+        return 'Question {}'.format(self.order)
+
+    def save(self, *args, **kwargs):
+        if self.order is None:
+            self.order = ProfileQuestion.objects.all().order_by(
+                '-order').first()
+            if self.order is None:
+                self.order = 1
+
+        super(ProfileQuestion, self).save(*args, **kwargs)
+
+    class Meta:
+        db_table = 'profile_question'
+        verbose_name = _('Profile Question')
+        verbose_name_plural = _('Profile Questions')
+        ordering = ('order', )
+
+
+class ProfileQuestionAnswer(models.Model):
+    text = RichTextField(_('Answer Text'))
+    order = models.PositiveSmallIntegerField(_('Order'), null=True, blank=True)
+    question = models.ForeignKey(
+        ProfileQuestion, verbose_name=_('Profile Question'),
+        related_name='answers', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return 'Answer {0}-{1}'.format(self.question.order, self.order)
+
+    def save(self, *args, **kwargs):
+        if self.order is None:
+            self.order = ProfileQuestionAnswer.objects.all().order_by(
+                '-order').first()
+            if self.order is None:
+                self.order = 1
+
+        super(ProfileQuestionAnswer, self).save(*args, **kwargs)
+
+    class Meta:
+        db_table = 'profile_q_answer'
+        verbose_name = _('Profile Question Answer')
+        verbose_name_plural = _('Profile Question Answers')
+        ordering = ('question__order', 'order', )
+        unique_together = ('question', 'order')
+
+
+class ProfileAnswerPollutantIndex(models.Model):
+    pollutant = models.ForeignKey(
+        Pollutant, verbose_name=_('Pollutant'), related_name='indexes',
+        on_delete=models.CASCADE)
+    answer = models.ForeignKey(
+        ProfileQuestionAnswer, verbose_name=_('Answer'),
+        related_name='indexes', on_delete=models.CASCADE)
+    index = models.FloatField(_('Health Influence Index'), default=0.0)
+
+    def __str__(self):
+        return 'Index {0}-{1}-{2}'.format(
+            self.answer.question.order, self.answer.order, self.pollutant)

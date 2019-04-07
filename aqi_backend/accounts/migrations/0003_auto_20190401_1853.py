@@ -8,6 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('accounts', '0002_userprofile_modified'),
+        ('common', '0001_initial')
     ]
 
     operations = [

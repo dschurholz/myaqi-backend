@@ -1,9 +1,14 @@
+import nested_admin
 from django.contrib import admin
 
 from .models import (
     AQICategoryThreshold,
     AQIOrganization,
-    HealthCategoryThreshold
+    HealthCategoryThreshold,
+    Pollutant,
+    ProfileQuestion,
+    ProfileQuestionAnswer,
+    ProfileAnswerPollutantIndex
 )
 
 
@@ -28,6 +33,44 @@ class AQICategoryThresholdAdmin(admin.ModelAdmin):
     list_filter = ('aqi_organization', 'pollutant', )
 
 
+class PollutantAdmin(admin.ModelAdmin):
+    list_display = ('abbreviation', 'name', )
+
+
+class ProfileAnswerPollutantIndexInline(nested_admin.NestedStackedInline):
+    model = ProfileAnswerPollutantIndex
+    extra = 0
+
+
+class ProfileQuestionAnswerInline(nested_admin.NestedStackedInline):
+    model = ProfileQuestionAnswer
+    extra = 0
+    inlines = (ProfileAnswerPollutantIndexInline, )
+
+
+class ProfileQuestionAdmin(nested_admin.NestedModelAdmin):
+    inlines = (ProfileQuestionAnswerInline, )
+    list_display = ('get_str', 'order', 'text', )
+
+    def get_str(self, obj):
+        return obj.__str__()
+    get_str.short_description = 'Question'
+    get_str.admin_order_field = 'order'
+
+
+class ProfileQuestionAnswerAdmin(nested_admin.NestedModelAdmin):
+    inlines = (ProfileAnswerPollutantIndexInline, )
+    list_display = ('get_str', 'order', 'text', )
+
+    def get_str(self, obj):
+        return obj.__str__()
+    get_str.short_description = 'Answer'
+    get_str.admin_order_field = 'question__order'
+
+
 admin.site.register(AQIOrganization, AQIOrganizationAdmin)
 admin.site.register(HealthCategoryThreshold, HealthCategoryThresholdAdmin)
 admin.site.register(AQICategoryThreshold, AQICategoryThresholdAdmin)
+admin.site.register(Pollutant, PollutantAdmin)
+admin.site.register(ProfileQuestion, ProfileQuestionAdmin)
+admin.site.register(ProfileQuestionAnswer, ProfileQuestionAnswerAdmin)

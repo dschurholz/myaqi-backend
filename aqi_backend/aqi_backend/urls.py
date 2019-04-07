@@ -80,5 +80,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     re_path(r'^', include(
         (jwt_token_paths, 'token-auth'), namespace='token-auth')),
+    re_path(r'^_nested_admin/', include('nested_admin.urls')),
     path('', home, name='home')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
