@@ -1,6 +1,7 @@
 import requests
 import io
 import json
+from django.utils import timezone
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -14,7 +15,8 @@ from .constants import (
     VIC_ROADS_LIVE,
     VIC_ROADS_MAPSJS_START,
     FIRES,
-    MEASUREMENT
+    MEASUREMENT,
+    SITE_WITH_MEASUREMENTS
 )
 from .models import (
     Site,
@@ -41,6 +43,64 @@ class MonitorViewSet(ExtendedFilter, viewsets.ModelViewSet):
     extended_serializer_class = ExtendedMonitorSerializer
     permission_classes = [AllowAny, ]
     lookup_field = 'slug'
+
+
+class SitesProxy(APIView):
+    """
+    View to return all sites live from the AirWatch endpoints.
+    """
+    permission_classes = (AllowAny,)
+
+    def get(self, request, format=None):
+        """
+        Return a list of all sites.
+        """
+
+        now = timezone.localtime().strftime('%Y%m%d%H')
+        url = OrderedDict(AU_VIC_URL_MAP)[SITE_WITH_MEASUREMENTS].format(now)
+        headers = {'content-type': 'application/json'}
+        r = requests.get(url, params=request.query_params, headers=headers)
+        response = r.json()
+        # return Response(response)
+        response = response['IncidentSites'] + response['NonIncidentSites']
+        sites = []
+        for s in response:
+            live_measurements = [{
+                "aqi_value": m["AQIValue"],
+                "name": m["ShortName"],
+                "value": m["Value"],
+                "time_basis": m["TimeBasisID"],
+                "description": m["Description"].capitalize() if m[
+                    "Description"] else m["Abbreviation"]
+            } for m in s.get("Measurements", []) if m["ShortName"] is not None]
+            try:
+                local_site = Site.objects.get(pk=s['SiteId'])
+            except Site.DoesNotExist:
+                local_site = None
+            sites.append({
+                "site_id": s['SiteId'],
+                "name": s['Name'],
+                "latitude": s['Latitude'],
+                "longitude": s['Longitude'],
+                "fire_hazard_category": s.get('FireHazardCategory'),
+                "is_station_offline": s.get('IsStationOffline', False),
+                "has_incident": s.get('HasIncident', False),
+                "incident_type": s.get('SiteType', 'Non-incident'),
+                "incidents": [
+                    {}
+                ],
+                "site_list": [
+                    {
+                        "name": s["Region"]
+                    }
+                ],
+                "current_status": live_measurements,
+                "monitors": MonitorSerializer(
+                    local_site.monitors.all(), many=True,
+                    context={'request': request}
+                ).data if local_site is not None else []
+            })
+        return Response({'count': len(sites), 'results': sites})
 
 
 class MeasurementsProxy(APIView):

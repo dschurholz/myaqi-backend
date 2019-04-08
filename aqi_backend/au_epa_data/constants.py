@@ -26,6 +26,7 @@ REL_FIELD_NAME = 'rel_field_name'
 REL_FIELD_TYPE = 'rel_field_type'
 RELATIONAL_TABLE_STRUCTURE = 'relational_table_structure'
 SITE = 'site'
+SITE_WITH_MEASUREMENTS = 'sites_measurements'
 SITE_LIST = 'site_list'
 SITES = 'sites'
 TABLE_STRUCTURE = 'table_structure'
@@ -39,7 +40,8 @@ AU_VIC_URL_MAP = (
     (TIME_BASIS, 'http://sciwebsvc.epa.vic.gov.au/aqapi/Timebasis'),
     (MEASUREMENT, 'http://sciwebsvc.epa.vic.gov.au/aqapi/Measurements'),
     (FIRES, 'http://emergency.vic.gov.au/public/osom-geojson.json'),
-    (VIC_ROADS_LIVE, 'https://traffic.vicroads.vic.gov.au/maps.js')
+    (VIC_ROADS_LIVE, 'https://traffic.vicroads.vic.gov.au/maps.js'),
+    (SITE_WITH_MEASUREMENTS, 'http://sciwebsvc.epa.vic.gov.au/aqapi/SitesHourlyAirQuality?dateTimeStart={0}')
 )
 
 COMMAND_MODEL_MAP = (

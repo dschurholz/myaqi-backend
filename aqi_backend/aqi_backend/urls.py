@@ -22,8 +22,6 @@ from rest_framework_jwt import views as jwt_views
 from accounts.urls import router as accounts_router
 from common.views import home
 from au_epa_data.urls import router as au_epa_data_router
-from au_epa_data.rest_views import (
-    MeasurementsProxy, VicEmergencyProxy, VicRoadsLiveProxy)
 from common.urls import router as common_router
 
 admin.site.site_header = 'MyAQI'
@@ -52,15 +50,7 @@ api_urlpatterns = [
             ('common.urls', 'common'),
             namespace=common_router.namespace
         )
-    ),
-    path(
-        'measurements', MeasurementsProxy.as_view(), name='measurements-proxy'
-    ),
-    path(
-        'fires', VicEmergencyProxy.as_view(), name='fires-proxy'
-    ),
-    path(
-        'traffic', VicRoadsLiveProxy.as_view(), name='traffic-proxy')
+    )
 ]
 
 jwt_token_paths = [
