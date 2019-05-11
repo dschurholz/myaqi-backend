@@ -2,20 +2,24 @@ import logging
 import urllib
 import os
 import time
+import datetime
 import json
 import requests
 import xml.etree.ElementTree as ET
 from collections import OrderedDict
 from django.core.management.base import BaseCommand, CommandError
+from django.utils import timezone
 
 from au_epa_data.constants import (
     AU_VIC_URL_MAP,
     COMMAND_MODEL_MAP,
+    DATETIME_FORMAT,
     ENTRIES,
     ENTRIES_COUNT,
     FOREIGN_KEY,
     FOREIGN_KEY_SELF,
     MANY_2_MANY,
+    MEASUREMENT,
     REL_FIELD_NAME,
     REL_FIELD_TYPE,
     RELATIONAL_TABLE_STRUCTURE,
@@ -23,6 +27,7 @@ from au_epa_data.constants import (
     TABLE_STRUCTURE,
     UNIQUE_PARAMS,
 )
+from common.models import AQICategoryThreshold
 
 logger = logging.getLogger('myaqi.commands')
 
@@ -73,6 +78,11 @@ class Command(BaseCommand):
                 pass
 
         model_type = options.get('type')
+        # Get AQI THRESHOLDS
+        if model_type == MEASUREMENT:
+            aqi_thresholds = OrderedDict(AQICategoryThreshold.objects.filter(
+                aqi_organization='AUEPA').values_list('abbreviation', 'id'))
+
         model_dict = OrderedDict(COMMAND_MODEL_MAP)
         try:
             model = model_dict[model_type]
@@ -86,6 +96,7 @@ class Command(BaseCommand):
         if not url:
             url = OrderedDict(AU_VIC_URL_MAP)[model_type]
         if url_args is not None:
+            print('URL:', url_args)
             url = '?'.join([url, urllib.parse.urlencode(url_args)])
         data_format = options.get('format')
 
@@ -115,12 +126,31 @@ class Command(BaseCommand):
             default_fields = {}
             for k, attr in model_table.items():
                 if k in model_metadata[UNIQUE_PARAMS]:
-                    unique_fields[attr] = entry[k]
+                    if (model_type == MEASUREMENT and
+                            attr == 'date_time_start'):
+                        unique_fields[attr] = timezone.make_aware(
+                            datetime.datetime.strptime(
+                                entry[k], DATETIME_FORMAT), is_dst=False)
+                    else:
+                        unique_fields[attr] = entry[k]
                 else:
-                    default_fields[attr] = entry[k]
+                    if model_type == MEASUREMENT:
+                        if attr == 'aqi_category_threshold':
+                            default_fields[attr] = (
+                                None if entry[k] is None else
+                                aqi_thresholds[entry[k]])
+                        elif attr == 'date_time_recorded':
+                            default_fields[attr] = timezone.make_aware(
+                                datetime.datetime.strptime(
+                                    entry[k], DATETIME_FORMAT), is_dst=False)
+                        else:
+                            default_fields[attr] = entry[k]
+                    else:
+                        default_fields[attr] = entry[k]
 
             logger.debug('unique_fields: {0}\ndefault_fields: {1}'.format(
                 unique_fields, default_fields))
+
             obj, created = model.objects.update_or_create(
                 **unique_fields, defaults=default_fields)
 

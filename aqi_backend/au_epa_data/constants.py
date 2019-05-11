@@ -33,6 +33,7 @@ TABLE_STRUCTURE = 'table_structure'
 TIME_BASIS = 'time_basis'
 UNIQUE_PARAMS = 'unique_params'
 VIC_ROADS_LIVE = 'vic_roads_live'
+DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%S'
 
 AU_VIC_URL_MAP = (
     (MONITOR, 'http://sciwebsvc.epa.vic.gov.au/aqapi/Monitors'),
@@ -184,8 +185,8 @@ MEASUREMENT_TABLE_FIELD_MAP = (
     ('Value', 'value'),
     ('QualityStatus', 'quality_status'),
     ('AQIIndex', 'aqi_index'),
-    ('AQICategoryAbbreviation', 'aqi_category_threshold_id'),
-    ('HealthCategoryLevel', 'health_category_threshold_id'),
+    ('AQICategoryAbbreviation', 'aqi_category_threshold'),
+    ('HealthCategoryLevel', 'health_category_threshold'),
     ('SiteId', 'site_id'),
     ('TimeBaseId', 'time_basis_id'),
     ('MonitorId', 'monitor_id'),
@@ -225,3 +226,17 @@ SERVICES_METADATA = (
 )
 
 VIC_ROADS_MAPSJS_START = 'var preload_data = '
+
+POLLUTANT_TO_MONITOR = {
+    'BPM2.5': 'PM2.5',
+    'iPM2.5': 'PM2.5',
+    'PM10': 'PM10',
+    'sp_AQI': 'AQI',
+    'O3': 'O3',
+    'SO2': 'SO2',
+    'NO2': 'NO2',
+    'CO': 'CO',
+    'DBT': 'TEMP',
+    'VWS': 'WSPEED',
+    'VWD': 'WDIR',
+}

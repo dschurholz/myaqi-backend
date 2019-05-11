@@ -30,6 +30,7 @@ AQI_ORGANIZATIONS = [
 ]
 
 AQI_CATEGORY_THRESHOLDS = [
+    # AQI
     {
         "abbreviation": "VG",
         "lower_threshold_value": -5.0,
@@ -37,7 +38,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "description": "Very Good",
         "background_colour": "#339966",
         "foreground_colour": "#000000",
-        "aqi_organization_id": "AUEPA"
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "aqi"
     }, {
         "abbreviation": "G",
         "lower_threshold_value": 34.0,
@@ -45,7 +47,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "description": "Good",
         "background_colour": "#3399FF",
         "foreground_colour": "#000000",
-        "aqi_organization_id": "AUEPA"
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "aqi"
     }, {
         "abbreviation": "F",
         "lower_threshold_value": 67.0,
@@ -53,7 +56,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "description": "Fair",
         "background_colour": "#FFFF00",
         "foreground_colour": "#000000",
-        "aqi_organization_id": "AUEPA"
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "aqi"
     }, {
         "abbreviation": "P",
         "lower_threshold_value": 100.0,
@@ -61,7 +65,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "description": "Poor",
         "background_colour": "#FF0000",
         "foreground_colour": "#000000",
-        "aqi_organization_id": "AUEPA"
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "aqi"
     }, {
         "abbreviation": "VP",
         "lower_threshold_value": 150.0,
@@ -69,7 +74,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "description": "Very Poor",
         "background_colour": "#000000",
         "foreground_colour": "#FFFFFF",
-        "aqi_organization_id": "AUEPA"
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "aqi"
     }, {
         "abbreviation": "NA",
         "lower_threshold_value": None,
@@ -77,7 +83,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "description": "Not Available",
         "background_colour": "#999999",
         "foreground_colour": "#999999",
-        "aqi_organization_id": "AUEPA"
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "aqi"
     }, {
         "abbreviation": "EC",
         "lower_threshold_value": None,
@@ -85,8 +92,338 @@ AQI_CATEGORY_THRESHOLDS = [
         "description": "Empty cell",
         "background_colour": "#CCCCCC",
         "foreground_colour": "#CCCCCC",
-        "aqi_organization_id": "AUEPA"
-    }
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "aqi"
+    },
+    # PM2.5 24HR_RAV
+    {
+        "abbreviation": "VG",
+        "lower_threshold_value": 0.0,
+        "upper_threshold_value": 8.2,
+        "description": "Very Good",
+        "background_colour": "#339966",
+        "foreground_colour": "#000000",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "pm2.5_24h_rav"
+    }, {
+        "abbreviation": "G",
+        "lower_threshold_value": 8.3,
+        "upper_threshold_value": 16.4,
+        "description": "Good",
+        "background_colour": "#3399FF",
+        "foreground_colour": "#000000",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "pm2.5_24h_rav"
+    }, {
+        "abbreviation": "F",
+        "lower_threshold_value": 16.5,
+        "upper_threshold_value": 24.9,
+        "description": "Fair",
+        "background_colour": "#FFFF00",
+        "foreground_colour": "#000000",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "pm2.5_24h_rav"
+    }, {
+        "abbreviation": "P",
+        "lower_threshold_value": 25.0,
+        "upper_threshold_value": 37.4,
+        "description": "Poor",
+        "background_colour": "#FF0000",
+        "foreground_colour": "#000000",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "pm2.5_24h_rav"
+    }, {
+        "abbreviation": "VP",
+        "lower_threshold_value": 37.5,
+        "upper_threshold_value": 99999.0,
+        "description": "Very Poor",
+        "background_colour": "#000000",
+        "foreground_colour": "#FFFFFF",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "pm2.5_24h_rav"
+    },
+    # PM2.5 1HR_AV
+    {
+        "abbreviation": "VG",
+        "lower_threshold_value": 0.0,
+        "upper_threshold_value": 13.1,
+        "description": "Very Good",
+        "background_colour": "#339966",
+        "foreground_colour": "#000000",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "pm2.5"
+    }, {
+        "abbreviation": "G",
+        "lower_threshold_value": 13.2,
+        "upper_threshold_value": 26.3,
+        "description": "Good",
+        "background_colour": "#3399FF",
+        "foreground_colour": "#000000",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "pm2.5"
+    }, {
+        "abbreviation": "F",
+        "lower_threshold_value": 26.4,
+        "upper_threshold_value": 39.9,
+        "description": "Fair",
+        "background_colour": "#FFFF00",
+        "foreground_colour": "#000000",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "pm2.5"
+    }, {
+        "abbreviation": "P",
+        "lower_threshold_value": 40.0,
+        "upper_threshold_value": 59.9,
+        "description": "Poor",
+        "background_colour": "#FF0000",
+        "foreground_colour": "#000000",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "pm2.5"
+    }, {
+        "abbreviation": "VP",
+        "lower_threshold_value": 60.0,
+        "upper_threshold_value": 99999.0,
+        "description": "Very Poor",
+        "background_colour": "#000000",
+        "foreground_colour": "#FFFFFF",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "pm2.5"
+    },
+    # PM10 1HR_AV
+    {
+        "abbreviation": "VG",
+        "lower_threshold_value": 0.0,
+        "upper_threshold_value": 26.3,
+        "description": "Very Good",
+        "background_colour": "#339966",
+        "foreground_colour": "#000000",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "pm10"
+    }, {
+        "abbreviation": "G",
+        "lower_threshold_value": 26.4,
+        "upper_threshold_value": 52.7,
+        "description": "Good",
+        "background_colour": "#3399FF",
+        "foreground_colour": "#000000",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "pm10"
+    }, {
+        "abbreviation": "F",
+        "lower_threshold_value": 52.8,
+        "upper_threshold_value": 79.9,
+        "description": "Fair",
+        "background_colour": "#FFFF00",
+        "foreground_colour": "#000000",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "pm10"
+    }, {
+        "abbreviation": "P",
+        "lower_threshold_value": 80.0,
+        "upper_threshold_value": 119.9,
+        "description": "Poor",
+        "background_colour": "#FF0000",
+        "foreground_colour": "#000000",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "pm10"
+    }, {
+        "abbreviation": "VP",
+        "lower_threshold_value": 120.0,
+        "upper_threshold_value": 99999.0,
+        "description": "Very Poor",
+        "background_colour": "#000000",
+        "foreground_colour": "#FFFFFF",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "pm10"
+    },
+    # CO 1HR_AV
+    {
+        "abbreviation": "VG",
+        "lower_threshold_value": 0.0,
+        "upper_threshold_value": 2.9,
+        "description": "Very Good",
+        "background_colour": "#339966",
+        "foreground_colour": "#000000",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "co"
+    }, {
+        "abbreviation": "G",
+        "lower_threshold_value": 3.0,
+        "upper_threshold_value": 5.8,
+        "description": "Good",
+        "background_colour": "#3399FF",
+        "foreground_colour": "#000000",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "co"
+    }, {
+        "abbreviation": "F",
+        "lower_threshold_value": 5.9,
+        "upper_threshold_value": 8.9,
+        "description": "Fair",
+        "background_colour": "#FFFF00",
+        "foreground_colour": "#000000",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "co"
+    }, {
+        "abbreviation": "P",
+        "lower_threshold_value": 9.0,
+        "upper_threshold_value": 13.4,
+        "description": "Poor",
+        "background_colour": "#FF0000",
+        "foreground_colour": "#000000",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "co"
+    }, {
+        "abbreviation": "VP",
+        "lower_threshold_value": 13.5,
+        "upper_threshold_value": 99999.0,
+        "description": "Very Poor",
+        "background_colour": "#000000",
+        "foreground_colour": "#FFFFFF",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "co"
+    },
+    # SO2 1HR_AV
+    {
+        "abbreviation": "VG",
+        "lower_threshold_value": 0.0,
+        "upper_threshold_value": 65,
+        "description": "Very Good",
+        "background_colour": "#339966",
+        "foreground_colour": "#000000",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "so2"
+    }, {
+        "abbreviation": "G",
+        "lower_threshold_value": 66.0,
+        "upper_threshold_value": 131.0,
+        "description": "Good",
+        "background_colour": "#3399FF",
+        "foreground_colour": "#000000",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "so2"
+    }, {
+        "abbreviation": "F",
+        "lower_threshold_value": 132.0,
+        "upper_threshold_value": 199.0,
+        "description": "Fair",
+        "background_colour": "#FFFF00",
+        "foreground_colour": "#000000",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "so2"
+    }, {
+        "abbreviation": "P",
+        "lower_threshold_value": 200.0,
+        "upper_threshold_value": 299.0,
+        "description": "Poor",
+        "background_colour": "#FF0000",
+        "foreground_colour": "#000000",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "so2"
+    }, {
+        "abbreviation": "VP",
+        "lower_threshold_value": 300.0,
+        "upper_threshold_value": 99999.0,
+        "description": "Very Poor",
+        "background_colour": "#000000",
+        "foreground_colour": "#FFFFFF",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "so2"
+    },
+    # NO2 1HR_AV
+    {
+        "abbreviation": "VG",
+        "lower_threshold_value": 0.0,
+        "upper_threshold_value": 39.0,
+        "description": "Very Good",
+        "background_colour": "#339966",
+        "foreground_colour": "#000000",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "no2"
+    }, {
+        "abbreviation": "G",
+        "lower_threshold_value": 40.0,
+        "upper_threshold_value": 78.0,
+        "description": "Good",
+        "background_colour": "#3399FF",
+        "foreground_colour": "#000000",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "no2"
+    }, {
+        "abbreviation": "F",
+        "lower_threshold_value": 79.0,
+        "upper_threshold_value": 119.0,
+        "description": "Fair",
+        "background_colour": "#FFFF00",
+        "foreground_colour": "#000000",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "no2"
+    }, {
+        "abbreviation": "P",
+        "lower_threshold_value": 120.0,
+        "upper_threshold_value": 179.0,
+        "description": "Poor",
+        "background_colour": "#FF0000",
+        "foreground_colour": "#000000",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "no2"
+    }, {
+        "abbreviation": "VP",
+        "lower_threshold_value": 180.0,
+        "upper_threshold_value": 99999.0,
+        "description": "Very Poor",
+        "background_colour": "#000000",
+        "foreground_colour": "#FFFFFF",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "no2"
+    },
+    # O3 1HR_AV
+    {
+        "abbreviation": "VG",
+        "lower_threshold_value": 0.0,
+        "upper_threshold_value": 33.0,
+        "description": "Very Good",
+        "background_colour": "#339966",
+        "foreground_colour": "#000000",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "o3"
+    }, {
+        "abbreviation": "G",
+        "lower_threshold_value": 34.0,
+        "upper_threshold_value": 66.0,
+        "description": "Good",
+        "background_colour": "#3399FF",
+        "foreground_colour": "#000000",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "o3"
+    }, {
+        "abbreviation": "F",
+        "lower_threshold_value": 67.0,
+        "upper_threshold_value": 99.0,
+        "description": "Fair",
+        "background_colour": "#FFFF00",
+        "foreground_colour": "#000000",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "o3"
+    }, {
+        "abbreviation": "P",
+        "lower_threshold_value": 100.0,
+        "upper_threshold_value": 149.0,
+        "description": "Poor",
+        "background_colour": "#FF0000",
+        "foreground_colour": "#000000",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "o3"
+    }, {
+        "abbreviation": "VP",
+        "lower_threshold_value": 150.0,
+        "upper_threshold_value": 99999.0,
+        "description": "Very Poor",
+        "background_colour": "#000000",
+        "foreground_colour": "#FFFFFF",
+        "aqi_organization_id": "AUEPA",
+        "pollutant": "o3"
+    },
 ]
 
 HEALTH_CATEGORY_THRESHOLD = [

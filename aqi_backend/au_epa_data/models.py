@@ -1,10 +1,12 @@
 import logging
+import copy
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from django.db import IntegrityError
+from django.utils import timezone
 from django.utils.text import slugify
-
-from common.models import AQICategoryThreshold, HealthCategoryThreshold
+from django.db.models import Avg
+from django.db.models.functions import Cast
 
 logger = logging.getLogger('myaqi')
 
@@ -218,27 +220,25 @@ class Measurement(UpdateM2MModel):
         _("Quality Status"), default=9)
     aqi_index = models.PositiveSmallIntegerField(
         _("AQI Index"), default=0)
-    aqi_category_threshold = models.ForeignKey(
-        AQICategoryThreshold, verbose_name=_("AQI Category"), blank=True,
-        null=True, on_delete=models.DO_NOTHING)
-    health_category_threshold = models.ForeignKey(
-        HealthCategoryThreshold, verbose_name=_("Health Category"), blank=True,
-        null=True, on_delete=models.DO_NOTHING)
+    aqi_category_threshold = models.PositiveSmallIntegerField(
+        _("AQI Category"), blank=True, null=True)
+    health_category_threshold = models.PositiveSmallIntegerField(
+        _("Health Category"), blank=True, null=True)
     site = models.ForeignKey(
         Site, verbose_name=_("Site"), blank=True, null=True,
-        on_delete=models.DO_NOTHING)
+        on_delete=models.DO_NOTHING, related_name='measurements')
     time_basis = models.ForeignKey(
         TimeBasis, verbose_name=_("Time Basis"), blank=True, null=True,
-        on_delete=models.DO_NOTHING)
+        on_delete=models.DO_NOTHING, related_name='measurements')
     monitor = models.ForeignKey(
         Monitor, verbose_name=_("Monitor"), blank=True, null=True,
-        on_delete=models.DO_NOTHING)
+        on_delete=models.DO_NOTHING, related_name='measurements')
     monitor_time_basis = models.ForeignKey(
         MonitorTimeBasis, verbose_name=_("Monitor Time Basis"), blank=True,
-        null=True, on_delete=models.DO_NOTHING)
+        null=True, on_delete=models.DO_NOTHING, related_name='measurements')
     equipment_type = models.ForeignKey(
         EquipmentType, verbose_name=_("Equipment Type"), blank=True, null=True,
-        on_delete=models.DO_NOTHING)
+        on_delete=models.DO_NOTHING, related_name='measurements')
 
     def __str__(self):
         return self.monitor_id
@@ -254,6 +254,57 @@ class Measurement(UpdateM2MModel):
                 return False
             return True
         return False
+
+    @classmethod
+    def measurements_for_forecast(
+            cls, measurements, aq_attributes, start_date, end_date):
+
+        from .constants import DATETIME_FORMAT, POLLUTANT_TO_MONITOR
+        from forecasting.utils import get_datetime_span_dict
+
+        print(start_date, end_date)
+        dates = get_datetime_span_dict(start_date, end_date)
+        data = {
+            'date': []
+        }
+        averages = {}
+        measurements = measurements.filter(
+            date_time_start__gte=start_date,
+            date_time_start__lte=end_date)
+
+        # Get the average for each aq_attr to mend missing pieces
+        # and create the data columns
+        for attr in aq_attributes:
+            avg = measurements.filter(monitor_id=attr).annotate(
+                value_float=Cast('value', models.FloatField())).aggregate(
+                    Avg('value_float'))
+            averages[attr] = round(avg['value_float__avg'], 2)
+            data[POLLUTANT_TO_MONITOR[attr]] = []
+
+        for m in measurements:
+            date_str = timezone.localtime(
+                m.date_time_start).strftime(DATETIME_FORMAT)
+            # print(date_str, m.monitor, m.value)
+            # if date_str not in dates.keys():
+            #     dates[date_str] = []
+            # print (date_str)
+            dates[date_str].append((
+                m.monitor.monitor_id, m.value
+            ))
+        for date, monitors in dates.items():
+            # print(date, len(monitors))
+            data['date'].append(date)
+            aq_attr_checklist = copy.copy(aq_attributes)
+            for monitor in monitors:
+                aq_attr_checklist.remove(monitor[0])
+                moni = POLLUTANT_TO_MONITOR[monitor[0]]
+                data[moni].append(monitor[1])
+            for attr in aq_attr_checklist:
+                moni = POLLUTANT_TO_MONITOR[attr]
+                data[moni].append(averages[attr])
+
+        print (averages)
+        return data
 
     class Meta:
         db_table = 'measurement'

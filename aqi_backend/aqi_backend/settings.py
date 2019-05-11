@@ -39,6 +39,7 @@ DJANGO_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis',
 ]
 
 THIRD_PARTY_APPS = [
@@ -56,6 +57,7 @@ MYAQI_APPS = [
     'au_epa_data',
     'common',
     'epa_data',
+    'geo_data'
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + MYAQI_APPS
@@ -94,7 +96,8 @@ TEMPLATES = [
 DATABASE_ROUTERS = [
     'common.database_routers.AuthRouter',
     'common.database_routers.EPADataRouter',
-    'common.database_routers.CommonDataRouter'
+    'common.database_routers.CommonDataRouter',
+    'common.database_routers.GeoDataRouter'
 ]
 
 DATETIME_INPUT_FORMATS = [
@@ -235,7 +238,8 @@ SUIT_CONFIG = {
 # JWT
 
 JWT_AUTH = {
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=24*3600),
+    # Log the user in for 5 days
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=5 * 24 * 3600),
 }
 
 

@@ -5,3 +5,7 @@ aqi_backend/aqi_backend/settings_local.py
 *.sublime-workspace
 logs/**/*.log
 /**/.DS_Store
+src/
+aqi_backend/geo_data/data/
+aqi_backend/forecasting/data/figs/
+aqi_backend/forecasting/data/models/

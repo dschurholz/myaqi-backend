@@ -19,6 +19,21 @@ class AQIOrganization(models.Model):
     def __str__(self):
         return self.abbreviation
 
+    def get_categories(self, values, pollutant):
+        if self.abbreviation == 'AUEPA':
+            aqi_cats = self.aqi_category_thresholds.filter(
+                pollutant=pollutant,
+                lower_threshold_value__isnull=False).order_by(
+                    'lower_threshold_value')
+
+            def get_cat(val):
+                for cat in aqi_cats:
+                    if val < cat.upper_threshold_value:
+                        return cat.abbreviation
+
+            return map(get_cat, values)
+        return None
+
     class Meta:
         db_table = 'aqi_organization'
         verbose_name = _('AQI Organization')
@@ -73,7 +88,7 @@ class AQICategoryThreshold(models.Model):
         related_name=_("aqi_category_thresholds"),
         on_delete=models.DO_NOTHING, null=True, blank=True)
     pollutant = models.CharField(
-        _("Pollutant"), max_length=15, default="sp_AQI")
+        _("Pollutant"), max_length=15, default="aqi")
 
     def __str__(self):
         return self.description
