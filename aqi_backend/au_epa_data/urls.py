@@ -20,10 +20,10 @@ urlpatterns = [
         'measurements', MeasurementsProxy.as_view(), name='measurements-proxy'
     ),
     re_path(
-        'fires', VicEmergencyProxy.as_view(), name='fires-proxy'
+        r'^fires', VicEmergencyProxy.as_view(), name='fires-proxy'
     ),
     re_path(
-        'traffic', VicRoadsLiveProxy.as_view(), name='traffic-proxy'
+        r'^traffic$', VicRoadsLiveProxy.as_view(), name='traffic-proxy'
     ),
     re_path(
         'sites-live', SitesProxy.as_view(), name='sites-proxy'

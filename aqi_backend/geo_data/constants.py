@@ -48,11 +48,11 @@ TRAFFIC_FLOW_VOLUME = 'traffic_volume'
 
 TRAFFIC_RELEVANT_STATIONS = [
     # MOOROOLBARK
-    '115',
+    '118',
     # ALPHINGTON
-    '4653',
-    # MELBOURNE CBD,
-    '4405', '4406', '4419', '4404',
+    # '4653',
+    # # MELBOURNE CBD,
+    # '4405', '4406', '4419', '4404',
     # TRARALGON
     # No Measurement nearby
 ]

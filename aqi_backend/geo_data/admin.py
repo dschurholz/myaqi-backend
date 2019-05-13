@@ -1,6 +1,6 @@
 from django.contrib import admin as reg_admin
 from django.contrib.gis import admin
-from .models import WorldBorder, Fire, TrafficFlow
+from .models import WorldBorder, Fire, TrafficFlow, TrafficStation
 
 
 class WorldBorderAdmin(admin.GeoModelAdmin):
@@ -19,6 +19,11 @@ class TrafficFlowAdmin(reg_admin.ModelAdmin):
     list_filter = ('nb_scats_site', 'region_name')
 
 
+class TrafficStationAdmin(reg_admin.ModelAdmin):
+    list_display = ('name', 'station_id', 'latitude', 'longitude', )
+
+
 admin.site.register(Fire, FireAdmin)
 admin.site.register(TrafficFlow, TrafficFlowAdmin)
+admin.site.register(TrafficStation, TrafficStationAdmin)
 admin.site.register(WorldBorder, WorldBorderAdmin)

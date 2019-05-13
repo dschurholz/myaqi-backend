@@ -23,6 +23,7 @@ from accounts.urls import router as accounts_router
 from common.views import home
 from au_epa_data.urls import router as au_epa_data_router
 from common.urls import router as common_router
+from geo_data.urls import router as geo_router
 
 admin.site.site_header = 'MyAQI'
 
@@ -49,6 +50,20 @@ api_urlpatterns = [
         include(
             ('common.urls', 'common'),
             namespace=common_router.namespace
+        )
+    ),
+    re_path(
+        r'',
+        include(
+            ('geo_data.urls', 'geo_data'),
+            namespace=geo_router.namespace
+        )
+    ),
+    re_path(
+        r'',
+        include(
+            ('forecasting.urls', 'forecasting'),
+            namespace='forecasting'
         )
     )
 ]

@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import viewsets, generics
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 
-from .serializers import (UserSerializer, ExtendedUserSerializer, UserProfileQuestionnaireAnswerSerializer)
+from .serializers import (UserSerializer, ExtendedUserSerializer)
 
 UserModel = get_user_model()
 

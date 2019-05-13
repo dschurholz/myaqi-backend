@@ -2,9 +2,8 @@ import copy
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.gis.db import models
 from django.utils import timezone
-from django.db.models import Avg
+from django.db.models import Avg,  Q
 
-from forecasting.utils import get_datetime_span_dict
 from forecasting.constants import TRAFFIC_FLOW_TITLE_PREFIX
 from au_epa_data.constants import DATETIME_FORMAT
 
@@ -65,19 +64,37 @@ class Fire(models.Model):
         return []
 
     @classmethod
-    def get_fire_contains_situation(cls, location, seasons=[]):
+    def get_fire_contains_situation(
+            cls, locations, start_date=None, end_date=None, seasons=[]):
         fires = cls.objects.all()
+        queries = [Q(geom__contains=location) for location in locations]
+        query = queries.pop()
+        for item in queries:
+            query |= item
+        if start_date is not None:
+            fires = fires.filter(start_date__gte=start_date)
+        if end_date is not None:
+            fires = fires.filter(start_date__lte=end_date)
         if len(seasons) > 0:
             fires = fires.filter(season__in=seasons)
-        fires = fires.filter(geom__contains=location)
+        fires = fires.filter(query)
         return fires
 
     @classmethod
-    def get_fire_intersects_situation(cls, area, seasons=[]):
+    def get_fire_intersects_situation(
+            cls, areas, start_date=None, end_date=None, seasons=[]):
         fires = cls.objects.all()
+        queries = [Q(geom__intersects=area) for area in areas]
+        query = queries.pop()
+        for item in queries:
+            query |= item
+        if start_date is not None:
+            fires = fires.filter(start_date__gte=start_date)
+        if end_date is not None:
+            fires = fires.filter(start_date__lte=end_date)
         if len(seasons) > 0:
             fires = fires.filter(season__in=seasons)
-        fires = fires.filter(geom__intersects=area)
+        fires = fires.filter(query)
         return fires
 
     class Meta:
@@ -85,6 +102,21 @@ class Fire(models.Model):
         verbose_name = _('Fire')
         verbose_name_plural = _('Fires')
         ordering = ('-season', '-start_date', 'name', )
+
+
+class TrafficStation(models.Model):
+    station_id = models.IntegerField(_("Station ID"), primary_key=True)
+    name = models.CharField(_("Name"), max_length=63, blank=True, null=True)
+    latitude = models.DecimalField(
+        _("Latitude"), max_digits=16, decimal_places=6, blank=True, null=True)
+    longitude = models.DecimalField(
+        _("Longitude"), max_digits=16, decimal_places=6, blank=True, null=True)
+
+    class Meta:
+        db_table = 'traffic_station'
+        verbose_name = _('Traffic Station')
+        verbose_name_plural = _('Traffic Station')
+        ordering = ('name', )
 
 
 class TrafficFlow(models.Model):
@@ -97,6 +129,7 @@ class TrafficFlow(models.Model):
     @classmethod
     def traffic_flows_for_forecast(
             cls, traffic_flow_ids, start_date, end_date):
+        from forecasting.utils import get_datetime_span_dict
 
         traffic_flows = cls.objects.filter(
             nb_scats_site__in=traffic_flow_ids,

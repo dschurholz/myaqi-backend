@@ -71,6 +71,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'common.middleware.RequestPrintMiddleware'
 ]
 
 ROOT_URLCONF = 'aqi_backend.urls'
@@ -167,14 +168,6 @@ MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, '../../media')
 
-
-# Cors Headers
-
-CORS_MODEL = 'common.CustomCors'
-
-CORS_ALLOW_CREDENTIALS = True
-
-
 # Rest Framework
 
 API_PREFIX = 'api'
@@ -190,6 +183,7 @@ REST_FRAMEWORK = {
 
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
+        'common.permissions.AllowOptionsAuthentication'
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
@@ -326,7 +320,7 @@ LOGGING = {
         },
         'django.request': {
             'handlers': ['request_file', 'mail_admins'],
-            'level': 'ERROR',
+            'level': 'DEBUG',
             'propagate': False,
         },
         'django.server': {

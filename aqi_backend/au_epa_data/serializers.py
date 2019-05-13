@@ -25,6 +25,20 @@ class SiteListSerializer(serializers.ModelSerializer):
         read_only_fields = ('name', )
 
 
+class GeoSiteSerializer(serializers.ModelSerializer):
+    fire_area = serializers.SerializerMethodField(
+        read_only=True, method_name='serialize_fire_area')
+
+    def serialize_fire_area(self, obj):
+        return obj.fire_area.geojson
+
+    class Meta:
+        model = Site
+        fields = ('site_id', 'name', 'latitude', 'longitude', 'fire_area')
+        read_only_fields = (
+            'site_id', 'name', 'latitude', 'longitude', 'fire_area')
+
+
 class ShortSiteSerializer(serializers.HyperlinkedModelSerializer):
     site_list = SiteListSerializer(many=True, read_only=True)
 

@@ -109,15 +109,18 @@ TIME_BASIS = {
 
 TRAFFIC_FLOW_TITLE_PREFIX = 'TRAFFIC'
 
+TRAFFIC_STATIONS = ['118', '4653', '4419']
+
 TRAFFIC_FORECAST_STATIONS = {
     # MOOROOLBARK
-    '10136': ['115'],
+    '10136': ['118'],
     # ALPHINGTON
     '10001': ['4653'],
     # MELBOURNE CBD,
     '10239': ['4419'],  # ['4405', '4406', '4419', '4404'],
     # TRARALGON
     # No Measurement nearby
+    '10011': []
 }
 
 FORECASTABLE_POLLUTANTS = ['AQI', 'PM2.5', 'PM10', 'O3', 'NO2', 'SO2', 'CO']

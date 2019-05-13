@@ -35,8 +35,8 @@ def run(verbose=True):
         year_dir_path = os.path.join(traffic_data_dir, year_dir)
         file_list = sorted(os.listdir(year_dir_path))
         for traffic_file in file_list:
-            # if traffic_file.endswith(".csv"):
-            if traffic_file == "VSDATA_20170718.csv":
+            # if traffic_file == "VSDATA_20170718.csv":
+            if traffic_file.endswith(".csv"):
                 print("Importing file:", traffic_file)
                 with open(
                         os.path.join(year_dir_path, traffic_file)) as csv_file:

@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.utils.text import slugify
 from django.db.models import Avg
 from django.db.models.functions import Cast
+from django.contrib.gis.geos import Point
 
 logger = logging.getLogger('myaqi')
 
@@ -49,9 +50,22 @@ class Site(UpdateM2MModel):
         _("Incident Type"), max_length=31, blank=True, null=True)
     site_list = models.ManyToManyField(
         SiteList, verbose_name=_("Site List"), blank=True)
+    _fire_area_radius = 0.2
 
     def __str__(self):
         return "{0}-{1}".format(self.site_id, self.name)
+
+    @property
+    def location_point(self):
+        return Point(float(self.longitude), float(self.latitude))
+
+    @property
+    def fire_area(self):
+        return self.location_point.buffer(self._fire_area_radius)
+
+    def set_fire_area_radius(self, fire_area_radius):
+        self._fire_area_radius = fire_area_radius
+        return self._fire_area_radius
 
     def update_m2m_field(self, m2m_field, entries):
         from .constants import SITE_LIST
@@ -296,6 +310,7 @@ class Measurement(UpdateM2MModel):
             data['date'].append(date)
             aq_attr_checklist = copy.copy(aq_attributes)
             for monitor in monitors:
+                print(aq_attr_checklist, monitor[0])
                 aq_attr_checklist.remove(monitor[0])
                 moni = POLLUTANT_TO_MONITOR[monitor[0]]
                 data[moni].append(monitor[1])
