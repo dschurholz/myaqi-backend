@@ -34,6 +34,7 @@ TIME_BASIS = 'time_basis'
 UNIQUE_PARAMS = 'unique_params'
 VIC_ROADS_LIVE = 'vic_roads_live'
 DATETIME_FORMAT = '%Y-%m-%dT%H:%M:%S'
+WEATHERBIT_FORECAST = 'weatherbit'
 
 AU_VIC_URL_MAP = (
     (MONITOR, 'http://sciwebsvc.epa.vic.gov.au/aqapi/Monitors'),
@@ -42,7 +43,8 @@ AU_VIC_URL_MAP = (
     (MEASUREMENT, 'http://sciwebsvc.epa.vic.gov.au/aqapi/Measurements'),
     (FIRES, 'http://emergency.vic.gov.au/public/osom-geojson.json'),
     (VIC_ROADS_LIVE, 'https://traffic.vicroads.vic.gov.au/maps.js'),
-    (SITE_WITH_MEASUREMENTS, 'http://sciwebsvc.epa.vic.gov.au/aqapi/SitesHourlyAirQuality?dateTimeStart={0}')
+    (SITE_WITH_MEASUREMENTS, 'http://sciwebsvc.epa.vic.gov.au/aqapi/SitesHourlyAirQuality?dateTimeStart={0}'),
+    (WEATHERBIT_FORECAST, 'https://api.weatherbit.io/v2.0/forecast/airquality')
 )
 
 COMMAND_MODEL_MAP = (
