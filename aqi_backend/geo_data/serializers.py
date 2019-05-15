@@ -27,6 +27,21 @@ class TrafficFlowSerializer(serializers.ModelSerializer):
 
 
 class TrafficStationSerializer(serializers.ModelSerializer):
+    path = serializers.SerializerMethodField(
+        read_only=True, method_name='serialize_geometry')
+
+    quantiles = serializers.ListField(
+        child=serializers.IntegerField()
+    )
+
+    max_volume = serializers.IntegerField()
+
+    avg_volume = serializers.FloatField()
+
+    def serialize_geometry(self, obj):
+        path = serialize(
+            'geojson', [obj], geometry_field='path', fields=('id', ))
+        return json.loads(path)['features'][0]['geometry']
 
     class Meta:
         model = TrafficStation

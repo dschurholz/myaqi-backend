@@ -9,8 +9,8 @@ class WorldBorderAdmin(admin.GeoModelAdmin):
 
 
 class FireAdmin(admin.GeoModelAdmin):
-    list_display = ('name', 'season', 'start_date', 'area_ha', 'districtid')
-    list_filter = ('name', 'season', 'districtid')
+    list_display = ('name', 'season', 'start_date', 'area_ha', 'fire_svrty')
+    list_filter = ('name', 'season', 'districtid', 'fire_svrty')
 
 
 class TrafficFlowAdmin(reg_admin.ModelAdmin):
@@ -19,7 +19,7 @@ class TrafficFlowAdmin(reg_admin.ModelAdmin):
     list_filter = ('nb_scats_site', 'region_name')
 
 
-class TrafficStationAdmin(reg_admin.ModelAdmin):
+class TrafficStationAdmin(admin.OSMGeoAdmin):
     list_display = ('name', 'station_id', 'latitude', 'longitude', )
 
 

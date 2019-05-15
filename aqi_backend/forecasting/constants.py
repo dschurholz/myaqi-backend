@@ -26,6 +26,12 @@ MODELS_DATA_DIR = os.path.abspath(
         os.path.dirname(__file__), 'data', 'models'),
 )
 
+HISTORICAL_DATA_FILE = os.path.abspath(
+    os.path.join(
+        os.path.dirname(__file__), 'data', 'json',
+        'historic_overall_data_2017_2018.json'),
+)
+
 AU_SITES_FORECAST = ['10001', '10011', '10239', '10136']
 
 DATES = [
@@ -117,10 +123,24 @@ TRAFFIC_FORECAST_STATIONS = {
     # ALPHINGTON
     '10001': ['4653'],
     # MELBOURNE CBD,
-    '10239': ['4419'],  # ['4405', '4406', '4419', '4404'],
+    '10239': ['4419', '4405', '4406', '4419', '4404'],
     # TRARALGON
     # No Measurement nearby
     '10011': []
 }
 
 FORECASTABLE_POLLUTANTS = ['AQI', 'PM2.5', 'PM10', 'O3', 'NO2', 'SO2', 'CO']
+
+# Number of days to account for the fire
+FIRE_SEVERITIES = {
+    'BURNT_1': 2,
+    'BURNT_2': 3,
+    'BURNT_2F': 3,
+    'BURNT_2P': 3,
+    'BURNT_3': 5,
+    'BURNT_4': 7,
+    'BURNT_FOREST': 10,
+    'BURNT_NONFOREST': 7,
+    'BURNT_UNKNOWN': 5,
+    'UNBURNT': 1
+}

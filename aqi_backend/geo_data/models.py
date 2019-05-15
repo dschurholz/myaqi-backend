@@ -1,8 +1,9 @@
 import copy
+import pandas as pd
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.gis.db import models
 from django.utils import timezone
-from django.db.models import Avg,  Q
+from django.db.models import Avg, Q, Max
 
 from forecasting.constants import TRAFFIC_FLOW_TITLE_PREFIX
 from au_epa_data.constants import DATETIME_FORMAT
@@ -111,6 +112,28 @@ class TrafficStation(models.Model):
         _("Latitude"), max_digits=16, decimal_places=6, blank=True, null=True)
     longitude = models.DecimalField(
         _("Longitude"), max_digits=16, decimal_places=6, blank=True, null=True)
+    path = models.MultiLineStringField(
+        _('Path'), srid=4326, blank=True, null=True)
+
+    @property
+    def max_volume(self):
+        return TrafficFlow.objects.filter(
+            nb_scats_site=self.station_id).aggregate(
+                max=Max('traffic_volume'))['max']
+
+    @property
+    def avg_volume(self):
+        return TrafficFlow.objects.filter(
+            nb_scats_site=self.station_id).aggregate(
+                avg=Avg('traffic_volume'))['avg']
+
+    @property
+    def quantiles(self):
+        data = TrafficFlow.objects.filter(
+            nb_scats_site=self.station_id).values_list(
+                'traffic_volume', flat=True)
+        df = pd.DataFrame(data=data, columns=['traffic_volume'])
+        return df.traffic_volume.quantile([0.2, 0.4, 0.6, 0.8])
 
     class Meta:
         db_table = 'traffic_station'

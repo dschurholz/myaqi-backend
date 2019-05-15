@@ -29,7 +29,7 @@ class AQICategoryThresholdAdmin(admin.ModelAdmin):
     list_display = (
         'abbreviation', 'aqi_organization', 'lower_threshold_value',
         'upper_threshold_value', 'description', 'background_colour',
-        'foreground_colour', 'pollutant', )
+        'foreground_colour', 'pollutant', 'units', )
     list_filter = ('aqi_organization', 'pollutant', )
 
 

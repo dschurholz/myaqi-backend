@@ -72,6 +72,16 @@ class HealthCategoryThreshold(models.Model):
 
 
 class AQICategoryThreshold(models.Model):
+    UG_M3 = 'ug/m3'
+    PPM = 'ppm'
+    PPB = 'ppb'
+    NU = '-'
+    UNITS = (
+        (NU, 'no units'),
+        (UG_M3, 'micro-gram per cubic meter'),
+        (PPM, 'parts per million'),
+        (PPB, 'parts per billion'),
+    )
     abbreviation = models.CharField(_("Abbrevation"), max_length=2)
     lower_threshold_value = models.FloatField(
         _("Lower Threshold Value"), blank=True, null=True)
@@ -89,6 +99,8 @@ class AQICategoryThreshold(models.Model):
         on_delete=models.DO_NOTHING, null=True, blank=True)
     pollutant = models.CharField(
         _("Pollutant"), max_length=15, default="aqi")
+    units = models.CharField(
+        _("Units"), max_length=12, choices=UNITS, default=NU)
 
     def __str__(self):
         return self.description

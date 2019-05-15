@@ -41,7 +41,8 @@ class Migration(migrations.Migration):
                 ('description', models.CharField(blank=True, max_length=63, null=True, verbose_name='Description')),
                 ('background_colour', models.CharField(blank=True, max_length=7, null=True, verbose_name='Background Colour')),
                 ('foreground_colour', models.CharField(blank=True, max_length=7, null=True, verbose_name='Foreground Colour')),
-                ('pollutant', models.CharField(default='sp_AQI', max_length=15, verbose_name='Pollutant')),
+                ('pollutant', models.CharField(default='aqi', max_length=15, verbose_name='Pollutant')),
+                ('units', models.CharField(choices=[('-', 'no units'), ('ug/m3', 'micro-gram per cubic meter'), ('ppm', 'parts per million'), ('ppb', 'parts per billion')], default='-', max_length=12, verbose_name='Units')),
             ],
             options={
                 'verbose_name': 'AQI Category Threshold',

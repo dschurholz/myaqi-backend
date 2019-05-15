@@ -54,7 +54,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#50F0E6",
         "foreground_colour": "#000000",
         "aqi_organization_id": "EUEEA",
-        "pollutant": "pm2.5"
+        "pollutant": "pm2.5",
+        "units": "ug/m3"
     }, {
         "abbreviation": "F",
         "lower_threshold_value": 10.0,
@@ -63,7 +64,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#50CCAA",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "EUEEA",
-        "pollutant": "pm2.5"
+        "pollutant": "pm2.5",
+        "units": "ug/m3"
     }, {
         "abbreviation": "M",
         "lower_threshold_value": 20.0,
@@ -72,7 +74,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#F0E641",
         "foreground_colour": "#000000",
         "aqi_organization_id": "EUEEA",
-        "pollutant": "pm2.5"
+        "pollutant": "pm2.5",
+        "units": "ug/m3"
     }, {
         "abbreviation": "P",
         "lower_threshold_value": 25.0,
@@ -81,7 +84,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#FF5050",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "EUEEA",
-        "pollutant": "pm2.5"
+        "pollutant": "pm2.5",
+        "units": "ug/m3"
     }, {
         "abbreviation": "VP",
         "lower_threshold_value": 50.0,
@@ -90,7 +94,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#960032",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "EUEEA",
-        "pollutant": "pm2.5"
+        "pollutant": "pm2.5",
+        "units": "ug/m3"
     },
     # PM10
     {
@@ -101,7 +106,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#50F0E6",
         "foreground_colour": "#000000",
         "aqi_organization_id": "EUEEA",
-        "pollutant": "pm10"
+        "pollutant": "pm10",
+        "units": "ug/m3"
     }, {
         "abbreviation": "F",
         "lower_threshold_value": 20.0,
@@ -110,7 +116,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#50CCAA",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "EUEEA",
-        "pollutant": "pm10"
+        "pollutant": "pm10",
+        "units": "ug/m3"
     }, {
         "abbreviation": "M",
         "lower_threshold_value": 35.0,
@@ -119,7 +126,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#F0E641",
         "foreground_colour": "#000000",
         "aqi_organization_id": "EUEEA",
-        "pollutant": "pm10"
+        "pollutant": "pm10",
+        "units": "ug/m3"
     }, {
         "abbreviation": "P",
         "lower_threshold_value": 50.0,
@@ -128,7 +136,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#FF5050",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "EUEEA",
-        "pollutant": "pm10"
+        "pollutant": "pm10",
+        "units": "ug/m3"
     }, {
         "abbreviation": "VP",
         "lower_threshold_value": 100.0,
@@ -137,7 +146,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#960032",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "EUEEA",
-        "pollutant": "pm10"
+        "pollutant": "pm10",
+        "units": "ug/m3"
     },
     # CO
     {
@@ -148,7 +158,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#50F0E6",
         "foreground_colour": "#000000",
         "aqi_organization_id": "EUEEA",
-        "pollutant": "co"
+        "pollutant": "co",
+        "units": "ug/m3"
     }, {
         "abbreviation": "F",
         "lower_threshold_value": 5000.0,
@@ -157,7 +168,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#50CCAA",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "EUEEA",
-        "pollutant": "co"
+        "pollutant": "co",
+        "units": "ug/m3"
     }, {
         "abbreviation": "M",
         "lower_threshold_value": 7500.0,
@@ -166,7 +178,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#F0E641",
         "foreground_colour": "#000000",
         "aqi_organization_id": "EUEEA",
-        "pollutant": "co"
+        "pollutant": "co",
+        "units": "ug/m3"
     }, {
         "abbreviation": "P",
         "lower_threshold_value": 10000.0,
@@ -175,7 +188,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#FF5050",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "EUEEA",
-        "pollutant": "co"
+        "pollutant": "co",
+        "units": "ug/m3"
     }, {
         "abbreviation": "VP",
         "lower_threshold_value": 20000.0,
@@ -184,7 +198,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#960032",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "EUEEA",
-        "pollutant": "co"
+        "pollutant": "co",
+        "units": "ug/m3"
     },
     # NO2
     {
@@ -195,7 +210,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#50F0E6",
         "foreground_colour": "#000000",
         "aqi_organization_id": "EUEEA",
-        "pollutant": "no2"
+        "pollutant": "no2",
+        "units": "ug/m3"
     }, {
         "abbreviation": "F",
         "lower_threshold_value": 40.0,
@@ -204,7 +220,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#50CCAA",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "EUEEA",
-        "pollutant": "no2"
+        "pollutant": "no2",
+        "units": "ug/m3"
     }, {
         "abbreviation": "M",
         "lower_threshold_value": 100.0,
@@ -213,7 +230,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#F0E641",
         "foreground_colour": "#000000",
         "aqi_organization_id": "EUEEA",
-        "pollutant": "no2"
+        "pollutant": "no2",
+        "units": "ug/m3"
     }, {
         "abbreviation": "P",
         "lower_threshold_value": 200.0,
@@ -222,7 +240,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#FF5050",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "EUEEA",
-        "pollutant": "no2"
+        "pollutant": "no2",
+        "units": "ug/m3"
     }, {
         "abbreviation": "VP",
         "lower_threshold_value": 400.0,
@@ -231,7 +250,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#960032",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "EUEEA",
-        "pollutant": "no2"
+        "pollutant": "no2",
+        "units": "ug/m3"
     },
     # O3
     {
@@ -242,7 +262,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#50F0E6",
         "foreground_colour": "#000000",
         "aqi_organization_id": "EUEEA",
-        "pollutant": "o3"
+        "pollutant": "o3",
+        "units": "ug/m3"
     }, {
         "abbreviation": "F",
         "lower_threshold_value": 80.0,
@@ -251,7 +272,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#50CCAA",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "EUEEA",
-        "pollutant": "o3"
+        "pollutant": "o3",
+        "units": "ug/m3"
     }, {
         "abbreviation": "M",
         "lower_threshold_value": 120.0,
@@ -260,7 +282,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#F0E641",
         "foreground_colour": "#000000",
         "aqi_organization_id": "EUEEA",
-        "pollutant": "o3"
+        "pollutant": "o3",
+        "units": "ug/m3"
     }, {
         "abbreviation": "P",
         "lower_threshold_value": 180.0,
@@ -269,7 +292,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#FF5050",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "EUEEA",
-        "pollutant": "o3"
+        "pollutant": "o3",
+        "units": "ug/m3"
     }, {
         "abbreviation": "VP",
         "lower_threshold_value": 240.0,
@@ -278,7 +302,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#960032",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "EUEEA",
-        "pollutant": "o3"
+        "pollutant": "o3",
+        "units": "ug/m3"
     },
     # SO2
     {
@@ -289,7 +314,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#50F0E6",
         "foreground_colour": "#000000",
         "aqi_organization_id": "EUEEA",
-        "pollutant": "so2"
+        "pollutant": "so2",
+        "units": "ug/m3"
     }, {
         "abbreviation": "F",
         "lower_threshold_value": 100.0,
@@ -298,7 +324,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#50CCAA",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "EUEEA",
-        "pollutant": "so2"
+        "pollutant": "so2",
+        "units": "ug/m3"
     }, {
         "abbreviation": "M",
         "lower_threshold_value": 200.0,
@@ -307,7 +334,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#F0E641",
         "foreground_colour": "#000000",
         "aqi_organization_id": "EUEEA",
-        "pollutant": "so2"
+        "pollutant": "so2",
+        "units": "ug/m3"
     }, {
         "abbreviation": "P",
         "lower_threshold_value": 350.0,
@@ -316,7 +344,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#FF5050",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "EUEEA",
-        "pollutant": "so2"
+        "pollutant": "so2",
+        "units": "ug/m3"
     }, {
         "abbreviation": "VP",
         "lower_threshold_value": 500.0,
@@ -325,7 +354,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#960032",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "EUEEA",
-        "pollutant": "so2"
+        "pollutant": "so2",
+        "units": "ug/m3"
     }
 ]
 

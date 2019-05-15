@@ -57,7 +57,7 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#7E0023",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "USEPA",
-        "pollutant": "sp_AQI"
+        "pollutant": "aqi"
     },
     # PM2.5
     {
@@ -68,7 +68,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#00E400",
         "foreground_colour": "#000000",
         "aqi_organization_id": "USEPA",
-        "pollutant": "pm2.5"
+        "pollutant": "pm2.5",
+        "units": "ug/m3"
     }, {
         "abbreviation": "M",
         "lower_threshold_value": 15.5,
@@ -77,7 +78,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#FFFF00",
         "foreground_colour": "#000000",
         "aqi_organization_id": "USEPA",
-        "pollutant": "pm2.5"
+        "pollutant": "pm2.5",
+        "units": "ug/m3"
     }, {
         "abbreviation": "Us",
         "lower_threshold_value": 40.5,
@@ -86,7 +88,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#FF7E00",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "USEPA",
-        "pollutant": "pm2.5"
+        "pollutant": "pm2.5",
+        "units": "ug/m3"
     }, {
         "abbreviation": "U",
         "lower_threshold_value": 65.5,
@@ -95,7 +98,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#FF0000",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "USEPA",
-        "pollutant": "pm2.5"
+        "pollutant": "pm2.5",
+        "units": "ug/m3"
     }, {
         "abbreviation": "VU",
         "lower_threshold_value": 150.5,
@@ -104,7 +108,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#8F3F97",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "USEPA",
-        "pollutant": "pm2.5"
+        "pollutant": "pm2.5",
+        "units": "ug/m3"
     }, {
         "abbreviation": "H",
         "lower_threshold_value": 250.5,
@@ -113,7 +118,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#7E0023",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "USEPA",
-        "pollutant": "pm2.5"
+        "pollutant": "pm2.5",
+        "units": "ug/m3"
     },
     # PM10
     {
@@ -124,7 +130,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#00E400",
         "foreground_colour": "#000000",
         "aqi_organization_id": "USEPA",
-        "pollutant": "pm10"
+        "pollutant": "pm10",
+        "units": "ug/m3"
     }, {
         "abbreviation": "M",
         "lower_threshold_value": 55.0,
@@ -133,7 +140,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#FFFF00",
         "foreground_colour": "#000000",
         "aqi_organization_id": "USEPA",
-        "pollutant": "pm10"
+        "pollutant": "pm10",
+        "units": "ug/m3"
     }, {
         "abbreviation": "Us",
         "lower_threshold_value": 155.0,
@@ -142,7 +150,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#FF7E00",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "USEPA",
-        "pollutant": "pm10"
+        "pollutant": "pm10",
+        "units": "ug/m3"
     }, {
         "abbreviation": "U",
         "lower_threshold_value": 255.0,
@@ -151,7 +160,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#FF0000",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "USEPA",
-        "pollutant": "pm10"
+        "pollutant": "pm10",
+        "units": "ug/m3"
     }, {
         "abbreviation": "VU",
         "lower_threshold_value": 355.0,
@@ -160,7 +170,8 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#8F3F97",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "USEPA",
-        "pollutant": "pm10"
+        "pollutant": "pm10",
+        "units": "ug/m3"
     }, {
         "abbreviation": "H",
         "lower_threshold_value": 425.0,
@@ -169,208 +180,256 @@ AQI_CATEGORY_THRESHOLDS = [
         "background_colour": "#7E0023",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "USEPA",
-        "pollutant": "pm10"
+        "pollutant": "pm10",
+        "units": "ug/m3"
     },
     # SO2
-    # calculated from ppm to ug/m3 with T=22C
     {
         "abbreviation": "G",
         "lower_threshold_value": 0.0,
-        "upper_threshold_value": 89.9,
+        "upper_threshold_value": 35.0,
         "description": "Good",
         "background_colour": "#00E400",
         "foreground_colour": "#000000",
         "aqi_organization_id": "USEPA",
-        "pollutant": "so2"
+        "pollutant": "so2",
+        "units": "ppb"
     }, {
         "abbreviation": "M",
-        "lower_threshold_value": 90.0,
-        "upper_threshold_value": 144.9,
+        "lower_threshold_value": 36.0,
+        "upper_threshold_value": 75.0,
         "description": "Moderate",
         "background_colour": "#FFFF00",
         "foreground_colour": "#000000",
         "aqi_organization_id": "USEPA",
-        "pollutant": "so2"
+        "pollutant": "so2",
+        "units": "ppb"
     }, {
         "abbreviation": "Us",
-        "lower_threshold_value": 145.0,
-        "upper_threshold_value": 541.99,
+        "lower_threshold_value": 176.0,
+        "upper_threshold_value": 185.0,
         "description": "Unhealthy for sensitive groups",
         "background_colour": "#FF7E00",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "USEPA",
-        "pollutant": "so2"
+        "pollutant": "so2",
+        "units": "ppb"
     }, {
         "abbreviation": "U",
-        "lower_threshold_value": 542.0,
-        "upper_threshold_value": 803.99,
+        "lower_threshold_value": 186.0,
+        "upper_threshold_value": 304.0,
         "description": "Unhealthy",
         "background_colour": "#FF0000",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "USEPA",
-        "pollutant": "so2"
+        "pollutant": "so2",
+        "units": "ppb"
     }, {
         "abbreviation": "VU",
-        "lower_threshold_value": 804.0,
-        "upper_threshold_value": 1595.99,
+        "lower_threshold_value": 305.0,
+        "upper_threshold_value": 604.0,
         "description": "Very Unhealthy",
         "background_colour": "#8F3F97",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "USEPA",
-        "pollutant": "so2"
+        "pollutant": "so2",
+        "units": "ppb"
     }, {
         "abbreviation": "H",
-        "lower_threshold_value": 1596.0,
+        "lower_threshold_value": 605.0,
         "upper_threshold_value": 99999.0,
         "description": "Hazardous",
         "background_colour": "#7E0023",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "USEPA",
-        "pollutant": "so2"
+        "pollutant": "so2",
+        "units": "ppb"
     },
     # NO2
-    # calculated from ppm to ug/m3 with T=22C
     {
-        "abbreviation": "F",
+        "abbreviation": "G",
         "lower_threshold_value": 0.0,
-        "upper_threshold_value": 1234.99,
-        "description": "Fair - Minor Risk",
+        "upper_threshold_value": 53.0,
+        "description": "Good",
         "background_colour": "#00E400",
         "foreground_colour": "#000000",
         "aqi_organization_id": "USEPA",
-        "pollutant": "no2"
+        "pollutant": "no2",
+        "units": "ppb"
+    }, {
+        "abbreviation": "M",
+        "lower_threshold_value": 54.0,
+        "upper_threshold_value": 100.0,
+        "description": "Moderate",
+        "background_colour": "#FFFF00",
+        "foreground_colour": "#000000",
+        "aqi_organization_id": "USEPA",
+        "pollutant": "no2",
+        "units": "ppb"
+    }, {
+        "abbreviation": "Us",
+        "lower_threshold_value": 101.0,
+        "upper_threshold_value": 360.0,
+        "description": "Unhealthy for sensitive groups",
+        "background_colour": "#FF7E00",
+        "foreground_colour": "#FFFFFF",
+        "aqi_organization_id": "USEPA",
+        "pollutant": "no2",
+        "units": "ppb"
+    }, {
+        "abbreviation": "U",
+        "lower_threshold_value": 361.0,
+        "upper_threshold_value": 649.0,
+        "description": "Unhealthy",
+        "background_colour": "#FF0000",
+        "foreground_colour": "#FFFFFF",
+        "aqi_organization_id": "USEPA",
+        "pollutant": "no2",
+        "units": "ppb"
     }, {
         "abbreviation": "VU",
-        "lower_threshold_value": 1235.0,
-        "upper_threshold_value": 2373.99,
+        "lower_threshold_value": 650.0,
+        "upper_threshold_value": 1249.0,
         "description": "Very Unhealthy",
         "background_colour": "#8F3F97",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "USEPA",
-        "pollutant": "no2"
+        "pollutant": "no2",
+        "units": "ppb"
     }, {
         "abbreviation": "H",
-        "lower_threshold_value": 2374.0,
+        "lower_threshold_value": 1250.0,
         "upper_threshold_value": 99999.0,
         "description": "Hazardous",
         "background_colour": "#7E0023",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "USEPA",
-        "pollutant": "no2"
+        "pollutant": "no2",
+        "units": "ppb"
     },
     # O3
-    # calculated from ppm to ug/m3 with T=22C
     {
         "abbreviation": "G",
         "lower_threshold_value": 0.0,
-        "upper_threshold_value": 167.99,
+        "upper_threshold_value": 0.09,
         "description": "Good",
         "background_colour": "#00E400",
         "foreground_colour": "#000000",
         "aqi_organization_id": "USEPA",
-        "pollutant": "o3"
+        "pollutant": "o3",
+        "units": "ppm"
     }, {
         "abbreviation": "M",
-        "lower_threshold_value": 168.0,
-        "upper_threshold_value": 247.99,
+        "lower_threshold_value": 0.1,
+        "upper_threshold_value": 0.124,
         "description": "Moderate",
         "background_colour": "#FFFF00",
         "foreground_colour": "#000000",
         "aqi_organization_id": "USEPA",
-        "pollutant": "o3"
+        "pollutant": "o3",
+        "units": "ppm"
     }, {
         "abbreviation": "Us",
-        "lower_threshold_value": 248.0,
-        "upper_threshold_value": 326.99,
+        "lower_threshold_value": 0.126,
+        "upper_threshold_value": 0.164,
         "description": "Unhealthy for sensitive groups",
         "background_colour": "#FF7E00",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "USEPA",
-        "pollutant": "o3"
+        "pollutant": "o3",
+        "units": "ppm"
     }, {
         "abbreviation": "U",
-        "lower_threshold_value": 327.0,
-        "upper_threshold_value": 405.99,
+        "lower_threshold_value": 0.165,
+        "upper_threshold_value": 0.204,
         "description": "Unhealthy",
         "background_colour": "#FF0000",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "USEPA",
-        "pollutant": "o3"
+        "pollutant": "o3",
+        "units": "ppm"
     }, {
         "abbreviation": "VU",
-        "lower_threshold_value": 406.0,
-        "upper_threshold_value": 802.99,
+        "lower_threshold_value": 0.205,
+        "upper_threshold_value": 0.404,
         "description": "Very Unhealthy",
         "background_colour": "#8F3F97",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "USEPA",
-        "pollutant": "o3"
+        "pollutant": "o3",
+        "units": "ppm"
     }, {
         "abbreviation": "H",
-        "lower_threshold_value": 803.0,
+        "lower_threshold_value": 0.405,
         "upper_threshold_value": 99999.0,
         "description": "Hazardous",
         "background_colour": "#7E0023",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "USEPA",
-        "pollutant": "o3"
+        "pollutant": "o3",
+        "units": "ppm"
     },
     # CO
-    # calculated from ppm to ug/m3 with T=22C
     {
         "abbreviation": "G",
         "lower_threshold_value": 0.0,
-        "upper_threshold_value": 5088.99,
+        "upper_threshold_value": 4.4,
         "description": "Good",
         "background_colour": "#00E400",
         "foreground_colour": "#000000",
         "aqi_organization_id": "USEPA",
-        "pollutant": "co"
+        "pollutant": "co",
+        "units": "ppm"
     }, {
         "abbreviation": "M",
-        "lower_threshold_value": 5089.0,
-        "upper_threshold_value": 10872.99,
+        "lower_threshold_value": 4.5,
+        "upper_threshold_value": 9.4,
         "description": "Moderate",
         "background_colour": "#FFFF00",
         "foreground_colour": "#000000",
         "aqi_organization_id": "USEPA",
-        "pollutant": "co"
+        "pollutant": "co",
+        "units": "ppm"
     }, {
         "abbreviation": "Us",
-        "lower_threshold_value": 10873.0,
-        "upper_threshold_value": 14342.99,
+        "lower_threshold_value": 9.5,
+        "upper_threshold_value": 12.4,
         "description": "Unhealthy for sensitive groups",
         "background_colour": "#FF7E00",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "USEPA",
-        "pollutant": "co"
+        "pollutant": "co",
+        "units": "ppm"
     }, {
         "abbreviation": "U",
-        "lower_threshold_value": 14343.0,
-        "upper_threshold_value": 17812.99,
+        "lower_threshold_value": 12.5,
+        "upper_threshold_value": 15.4,
         "description": "Unhealthy",
         "background_colour": "#FF0000",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "USEPA",
-        "pollutant": "co"
+        "pollutant": "co",
+        "units": "ppm"
     }, {
         "abbreviation": "VU",
-        "lower_threshold_value": 17813.0,
-        "upper_threshold_value": 35162.99,
+        "lower_threshold_value": 15.5,
+        "upper_threshold_value": 30.4,
         "description": "Very Unhealthy",
         "background_colour": "#8F3F97",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "USEPA",
-        "pollutant": "co"
+        "pollutant": "co",
+        "units": "ppm"
     }, {
         "abbreviation": "H",
-        "lower_threshold_value": 35163.0,
+        "lower_threshold_value": 30.5,
         "upper_threshold_value": 999999.0,
         "description": "Hazardous",
         "background_colour": "#7E0023",
         "foreground_colour": "#FFFFFF",
         "aqi_organization_id": "USEPA",
-        "pollutant": "co"
+        "pollutant": "co",
+        "units": "ppm"
     },
 ]
 

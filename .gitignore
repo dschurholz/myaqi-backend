@@ -7,5 +7,5 @@ logs/**/*.log
 /**/.DS_Store
 src/
 aqi_backend/geo_data/data/
-aqi_backend/forecasting/data/figs/
-aqi_backend/forecasting/data/models/
+aqi_backend/forecasting/data/
+!aqi_backend/forecasting/data/air_quality

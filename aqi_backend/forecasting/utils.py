@@ -1,4 +1,5 @@
 import os
+import json
 import copy
 import datetime
 import numpy as np
@@ -18,8 +19,8 @@ from geo_data.serializers import (
     FireSerializer, TrafficStationSerializer
 )
 from .constants import (
-    AU_SITES_FORECAST, SITES_MONITORS, AQ_DATA_DIR, TRAFFIC_FORECAST_STATIONS,
-    TRAFFIC_STATIONS
+    AU_SITES_FORECAST, AQ_DATA_DIR, TRAFFIC_FORECAST_STATIONS,
+    TRAFFIC_STATIONS, HISTORICAL_DATA_FILE, FIRE_SEVERITIES
 )
 
 
@@ -80,7 +81,7 @@ def get_experimental_data(
         start_date=datetime.datetime(2017, 1, 1, 0, 0),
         # end_date=datetime.datetime(2017, 1, 31, 23, 0)):
         end_date=datetime.datetime(2018, 12, 31, 23, 0),
-        include_fires=False, fire_area_radius=0.2):
+        include_fires=False, fire_area_radius=0.2, save_file=False):
     timeline = get_datetime_span_dict(
         start_date, end_date, empty_type={
             'sites': {site: [] for site in AU_SITES_FORECAST},
@@ -127,7 +128,8 @@ def get_experimental_data(
         for f in fires:
             date_t = datetime.datetime(
                 f.start_date.year, f.start_date.month, f.start_date.day, 0, 0)
-            stop_date = date_t + datetime.timedelta(days=1)
+            stop_date = date_t + datetime.timedelta(
+                days=FIRE_SEVERITIES[f.fire_svrty])
             while date_t <= stop_date:
                 date_str = timezone.make_aware(date_t, is_dst=False).strftime(
                     DATETIME_FORMAT)
@@ -145,6 +147,9 @@ def get_experimental_data(
         results['fires'] = get_sites_fires(
             start_date, end_date, fire_area_radius=fire_area_radius)
 
+    if save_file:
+        with open(HISTORICAL_DATA_FILE, 'w') as f:
+            f.write(json.dumps(results))
     return results
 
 
@@ -161,5 +166,4 @@ def get_sites_fires(
 
     fires = Fire.get_fire_intersects_situation(
         sites_fire_areas, start_date, end_date, seasons)
-    print(len(fires))
     return FireSerializer(fires, many=True).data

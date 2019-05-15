@@ -18,7 +18,7 @@ class AQICategoryThresholdSerializer(serializers.ModelSerializer):
         fields = (
             'abbreviation', 'lower_threshold_value', 'upper_threshold_value',
             'description', 'background_colour', 'foreground_colour',
-            'aqi_organization_id', 'pollutant')
+            'aqi_organization_id', 'pollutant', 'units')
         read_only_fields = fields
 
 
