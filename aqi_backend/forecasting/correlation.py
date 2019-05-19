@@ -6,8 +6,9 @@ from .lstm_forecast import get_time_series
 from .constants import FIGS_DATA_DIR
 
 
-def run(file_name='10001_aq_series.csv', fig_title='AQ Variables Correlation'):
-    data = get_time_series(file_name)
+def run(file_name='10001_aq_series.csv', columns=None,
+        fig_title='AQ Variables Correlation'):
+    data = get_time_series(file_name, columns)
     corr = data.corr()
     fig = plt.figure()
     ax = fig.add_subplot(111)

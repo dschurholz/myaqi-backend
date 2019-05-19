@@ -123,7 +123,7 @@ TRAFFIC_FORECAST_STATIONS = {
     # ALPHINGTON
     '10001': ['4653'],
     # MELBOURNE CBD,
-    '10239': ['4419', '4405', '4406', '4419', '4404'],
+    '10239': ['4419', '4405', '4406', '4404'],
     # TRARALGON
     # No Measurement nearby
     '10011': []
@@ -143,4 +143,31 @@ FIRE_SEVERITIES = {
     'BURNT_NONFOREST': 10,
     'BURNT_UNKNOWN': 3,
     'UNBURNT': 3
+}
+
+FSITUATION_VERY_LOW = 1
+FSITUATION_LOW = 2
+FSITUATION_MODERATE = 3
+FSITUATION_HIGH = 4
+FSITUATION_EXTREMELY_HIGH = 5
+FIRE_SITUATIONS_RADIUS = {
+    FSITUATION_VERY_LOW: 1,
+    FSITUATION_LOW: 0.8,
+    FSITUATION_MODERATE: 0.6,
+    FSITUATION_HIGH: 0.4,
+    FSITUATION_EXTREMELY_HIGH: 0.2
+}
+
+FIRES_TITLE_PREFIX = 'FIRES'
+
+# Fire incidents distance to station for it to be relevant (in metres)
+FIRE_SITUATION_STATION_RADIUS = {
+    # ALPHINGTON (in city)
+    '10001': 20 * 1000,
+    # MELBOURNE CBD (in city centre)
+    '10239': 20 * 1000,
+    # MOOROOLBARK (outside city)
+    '10136': 100 * 1000,
+    # TRARALGON (countryside)
+    '10011': 100 * 1000
 }

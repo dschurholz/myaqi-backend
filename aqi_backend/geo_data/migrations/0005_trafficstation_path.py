@@ -7,7 +7,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('geo_data', '0005_auto_20190511_2342'),
+        ('geo_data', '0004_trafficstation'),
     ]
 
     operations = [

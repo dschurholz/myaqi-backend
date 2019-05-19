@@ -5,7 +5,7 @@ from au_epa_data.models import Site, Measurement
 from geo_data.models import TrafficFlow, Fire
 from .constants import (
     AU_SITES_FORECAST, SITES_MONITORS, AQ_DATA_DIR, TRAFFIC_FORECAST_STATIONS,
-    SITES_MONITORS_DATES)
+    SITES_MONITORS_DATES, FIRES_TITLE_PREFIX)
 
 
 def run(aq_sites=AU_SITES_FORECAST, pollutants=SITES_MONITORS,
@@ -30,7 +30,7 @@ def run(aq_sites=AU_SITES_FORECAST, pollutants=SITES_MONITORS,
             file_name = '_'.join([
                 '{}', *(pollutants[s_id]), 'aq_series.csv'])
 
-        if include_traffic:
+        if include_traffic and TRAFFIC_FORECAST_STATIONS[s_id]:
             traffic_flows = TrafficFlow.traffic_flows_for_forecast(
                 TRAFFIC_FORECAST_STATIONS[s_id], dates[0], dates[1]
             )
@@ -41,11 +41,17 @@ def run(aq_sites=AU_SITES_FORECAST, pollutants=SITES_MONITORS,
                     file_name = '_'.join(['{}', file_name.format(k)])
 
         if include_fires:
-            fires = Fire.fires_for_forecast()
-            print(fires)
+            fire_areas = {
+                i + 1: area
+                for i, area in enumerate(
+                    s.get_fire_situations_areas())
+            }
+            fires = Fire.fires_for_forecast(fire_areas, dates[0], dates[1])
+            data[FIRES_TITLE_PREFIX] = fires[FIRES_TITLE_PREFIX]
+            file_name = '_'.join(['{}', file_name.format('FIRES')])
 
         for k, v in data.items():
-            print (k, len(v))
+            print(k, len(v))
 
         dataset = pd.DataFrame(data=data)
         dataset.index.name = 'No'

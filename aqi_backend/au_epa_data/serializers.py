@@ -1,3 +1,4 @@
+import json
 from rest_framework import serializers
 
 from .models import (
@@ -26,15 +27,15 @@ class SiteListSerializer(serializers.ModelSerializer):
 
 
 class GeoSiteSerializer(serializers.ModelSerializer):
-    fire_area = serializers.SerializerMethodField(
-        read_only=True, method_name='serialize_fire_area')
+    fire_areas = serializers.SerializerMethodField(
+        read_only=True, method_name='serialize_fire_areas')
 
-    def serialize_fire_area(self, obj):
-        return obj.fire_area.geojson
+    def serialize_fire_areas(self, obj):
+        return [json.loads(fa.geojson) for fa in obj.fire_areas]
 
     class Meta:
         model = Site
-        fields = ('site_id', 'name', 'latitude', 'longitude', 'fire_area')
+        fields = ('site_id', 'name', 'latitude', 'longitude', 'fire_areas')
         read_only_fields = (
             'site_id', 'name', 'latitude', 'longitude', 'fire_area')
 

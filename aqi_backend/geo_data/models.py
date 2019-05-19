@@ -1,12 +1,22 @@
 import copy
+import datetime
 import pandas as pd
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.gis.db import models
 from django.utils import timezone
 from django.db.models import Avg, Q, Max
 
-from forecasting.constants import TRAFFIC_FLOW_TITLE_PREFIX
 from au_epa_data.constants import DATETIME_FORMAT
+from forecasting.constants import (
+    TRAFFIC_FLOW_TITLE_PREFIX,
+    FSITUATION_VERY_LOW,
+    FSITUATION_LOW,
+    FSITUATION_MODERATE,
+    FSITUATION_HIGH,
+    FSITUATION_EXTREMELY_HIGH,
+    FIRE_SEVERITIES,
+    FIRES_TITLE_PREFIX
+)
 
 
 class WorldBorder(models.Model):
@@ -61,10 +71,6 @@ class Fire(models.Model):
     geom = models.MultiPolygonField(_('Geometry'), srid=4326)
 
     @classmethod
-    def fires_for_forecast(cls):
-        return []
-
-    @classmethod
     def get_fire_contains_situation(
             cls, locations, start_date=None, end_date=None, seasons=[]):
         fires = cls.objects.all()
@@ -97,6 +103,54 @@ class Fire(models.Model):
             fires = fires.filter(season__in=seasons)
         fires = fires.filter(query)
         return fires
+
+    @classmethod
+    def fires_for_forecast(cls, areas, start_date, end_date):
+        from forecasting.utils import get_datetime_span_dict
+
+        fires = cls.objects.all()
+        dates = get_datetime_span_dict(
+            start_date, end_date, empty_type=0)
+        fires = fires.filter(
+            start_date__gte=start_date, start_date__lte=end_date)
+
+        # Getting all the fires enclosed in the biggest area
+        fires = fires.filter(geom__intersects=areas[FSITUATION_VERY_LOW])
+
+        for f in fires:
+            f_date = datetime.datetime(
+                f.start_date.year, f.start_date.month, f.start_date.day, 0,
+                0
+            )
+            f_end_date = (
+                f_date +
+                datetime.timedelta(days=FIRE_SEVERITIES[f.fire_svrty]))
+
+            # If fire is here, situation is at least very low
+            fire_situation = FSITUATION_VERY_LOW
+            if f.geom.intersects(areas[FSITUATION_EXTREMELY_HIGH]):
+                fire_situation = FSITUATION_EXTREMELY_HIGH
+            elif f.geom.intersects(areas[FSITUATION_HIGH]):
+                fire_situation = FSITUATION_HIGH
+            elif f.geom.intersects(areas[FSITUATION_MODERATE]):
+                fire_situation = FSITUATION_MODERATE
+            elif f.geom.intersects(areas[FSITUATION_LOW]):
+                fire_situation = FSITUATION_LOW
+
+            while f_date <= f_end_date and f_date <= end_date:
+                date_str = f_date.strftime(DATETIME_FORMAT)
+
+                # Higher situations take priority (when more than one fire at
+                # the same time)
+                if dates[date_str] < fire_situation:
+                    dates[date_str] = fire_situation
+
+                f_date += datetime.timedelta(hours=1)
+
+        return {
+            'date': list(dates.keys()),
+            FIRES_TITLE_PREFIX: list(dates.values())
+        }
 
     class Meta:
         db_table = 'fire'

@@ -6,7 +6,6 @@ import numpy as np
 import pandas as pd
 from django.utils import timezone
 
-from au_epa_data.constants import DATETIME_FORMAT
 from au_epa_data.models import Site
 from au_epa_data.serializers import GeoSiteSerializer
 from au_epa_data.constants import POLLUTANT_TO_MONITOR, DATETIME_FORMAT
@@ -79,9 +78,8 @@ def get_mult_by_attr(array, attr, value, extra=lambda d: d):
 
 def get_experimental_data(
         start_date=datetime.datetime(2017, 1, 1, 0, 0),
-        # end_date=datetime.datetime(2017, 1, 31, 23, 0)):
         end_date=datetime.datetime(2018, 12, 31, 23, 0),
-        include_fires=False, fire_area_radius=0.2, save_file=False):
+        include_fires=False, save_file=False):
     timeline = get_datetime_span_dict(
         start_date, end_date, empty_type={
             'sites': {site: [] for site in AU_SITES_FORECAST},
@@ -118,7 +116,7 @@ def get_experimental_data(
             timeline[date_str]['traffic_flows'][str(tf['nb_scats_site'])] = (
                 tf['traffic_volume'])
 
-        s.set_fire_area_radius(fire_area_radius)
+        s.set_fire_area_radius()
         fires = Fire.objects.filter(
             start_date__gte=start_date,
             start_date__lte=end_date,
@@ -144,8 +142,7 @@ def get_experimental_data(
         'timeline': timeline,
     }
     if include_fires:
-        results['fires'] = get_sites_fires(
-            start_date, end_date, fire_area_radius=fire_area_radius)
+        results['fires'] = get_sites_fires(start_date, end_date)
 
     if save_file:
         with open(HISTORICAL_DATA_FILE, 'w') as f:
@@ -155,13 +152,11 @@ def get_experimental_data(
 
 def get_sites_fires(
         start_date=datetime.datetime(2017, 1, 1, 0, 0),
-        # end_date=datetime.datetime(2017, 1, 31, 23, 0)):
         end_date=datetime.datetime(2018, 12, 31, 23, 0),
-        seasons=[2017, 2018],
-        fire_area_radius=0.2):
+        seasons=[2017, 2018]):
     sites_fire_areas = []
     for s in Site.objects.filter(site_id__in=AU_SITES_FORECAST):
-        s.set_fire_area_radius(fire_area_radius)
+        s.set_fire_area_radius()
         sites_fire_areas.append(s.fire_area)
 
     fires = Fire.get_fire_intersects_situation(

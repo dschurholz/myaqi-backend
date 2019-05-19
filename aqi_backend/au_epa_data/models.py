@@ -1,13 +1,17 @@
 import logging
 import copy
 from django.utils.translation import ugettext_lazy as _
-from django.db import models
-from django.db import IntegrityError
+from django.db import models, IntegrityError, connections
 from django.utils import timezone
 from django.utils.text import slugify
 from django.db.models import Avg
 from django.db.models.functions import Cast
 from django.contrib.gis.geos import Point
+from django.contrib.gis.geos import GEOSGeometry
+
+from geo_data.utils import with_metric_buffer
+from forecasting.constants import (
+    FIRE_SITUATIONS_RADIUS, FIRE_SITUATION_STATION_RADIUS)
 
 logger = logging.getLogger('myaqi')
 
@@ -50,7 +54,7 @@ class Site(UpdateM2MModel):
         _("Incident Type"), max_length=31, blank=True, null=True)
     site_list = models.ManyToManyField(
         SiteList, verbose_name=_("Site List"), blank=True)
-    _fire_area_radius = 0.2
+    _fire_area_radius = 50 * 1000  # in meters
 
     def __str__(self):
         return "{0}-{1}".format(self.site_id, self.name)
@@ -61,11 +65,46 @@ class Site(UpdateM2MModel):
 
     @property
     def fire_area(self):
-        return self.location_point.buffer(self._fire_area_radius)
+        # return with_metric_buffer(self.location_point, self._fire_area_radius)
+        raw_query = (
+            "SELECT ST_Buffer(ST_GeomFromText('{location_point}', 4326)"
+            "::geography, {radius})".format(
+                location_point=self.location_point,
+                radius=self._fire_area_radius
+            )
+        )
+        fire_area = None
+        with connections['geo_data'].cursor() as cursor:
+            cursor.execute(raw_query)
+            fire_area = GEOSGeometry(cursor.fetchone()[0])
 
-    def set_fire_area_radius(self, fire_area_radius):
-        self._fire_area_radius = fire_area_radius
+        return fire_area
+
+    @property
+    def fire_areas(self):
+        return self.get_fire_situations_areas()
+
+    def set_fire_area_radius(self, fire_area_radius=None):
+        if fire_area_radius is not None:
+            site_radius = fire_area_radius
+        else:
+            site_radius = FIRE_SITUATION_STATION_RADIUS[str(self.site_id)]
+
+        self._fire_area_radius = site_radius
         return self._fire_area_radius
+
+    def get_fire_situations_areas(self, furthest_fire_area_radius=None):
+        areas = []
+        if furthest_fire_area_radius is not None:
+            furthest_radius = furthest_fire_area_radius
+        else:
+            furthest_radius = FIRE_SITUATION_STATION_RADIUS[str(self.site_id)]
+
+        for situation, radius_prop in FIRE_SITUATIONS_RADIUS.items():
+            self.set_fire_area_radius(furthest_radius * radius_prop)
+            areas.append(self.fire_area)
+
+        return areas
 
     def update_m2m_field(self, m2m_field, entries):
         from .constants import SITE_LIST
@@ -310,7 +349,6 @@ class Measurement(UpdateM2MModel):
             data['date'].append(date)
             aq_attr_checklist = copy.copy(aq_attributes)
             for monitor in monitors:
-                print(aq_attr_checklist, monitor[0])
                 aq_attr_checklist.remove(monitor[0])
                 moni = POLLUTANT_TO_MONITOR[monitor[0]]
                 data[moni].append(monitor[1])
@@ -318,7 +356,7 @@ class Measurement(UpdateM2MModel):
                 moni = POLLUTANT_TO_MONITOR[attr]
                 data[moni].append(averages[attr])
 
-        print (averages)
+        print(averages)
         return data
 
     class Meta:
