@@ -8,4 +8,4 @@ logs/**/*.log
 src/
 aqi_backend/geo_data/data/
 aqi_backend/forecasting/data/
-!aqi_backend/forecasting/data/air_quality
+!aqi_backend/forecasting/data/air_quality/*.csv

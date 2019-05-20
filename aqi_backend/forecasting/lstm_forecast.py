@@ -4,6 +4,11 @@ import datetime
 import numpy as np
 import pandas as pd
 
+import matplotlib
+from django.conf import settings
+if settings.DEBUG:
+    matplotlib.use('agg')
+
 import matplotlib.pyplot as plt
 from matplotlib import dates
 
@@ -521,6 +526,7 @@ def run_experiments(
             print('%d, %d) TrainCORRELATION=%f, TestCORRELATION=%f' % (
                 r, e, correlation['train'].iloc[-1],
                 correlation['test'].iloc[-1]))
+            plt.close()
 
             results['mae_vals'].append(test_stats['mae'][-1])
             results['rmse_vals'].append(test_stats['rmse'][-1])
@@ -551,6 +557,7 @@ def run_experiments(
                 os.path.join(
                     FIGS_DATA_DIR, 'epochs', '%s_stats_%s.png' % (k, f)),
                 quality=100, format='png', pad_inches=0.25)
+            plt.close()
 
 
 def run_print_features(
