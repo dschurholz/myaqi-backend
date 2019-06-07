@@ -49,7 +49,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
         fields = (
-            'age', 'colour_blindness', 'aqi_scale', 'modified',
+            'age', 'colour_blindness', 'aqi_scale', 'modified', 'vis_tool',
             'questionnaire_answers', 'sensitivity_levels', )
         read_only_fields = ('modified', )
 

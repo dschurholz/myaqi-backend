@@ -26,6 +26,11 @@ MODELS_DATA_DIR = os.path.abspath(
         os.path.dirname(__file__), 'data', 'models'),
 )
 
+FORECASTS_DATA_DIR = os.path.abspath(
+    os.path.join(
+        os.path.dirname(__file__), 'data', 'forecasts'),
+)
+
 HISTORICAL_DATA_FILE = os.path.abspath(
     os.path.join(
         os.path.dirname(__file__), 'data', 'json',

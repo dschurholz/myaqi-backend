@@ -2,12 +2,14 @@ from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from django.contrib.auth import get_user_model
 
+from common.constants import GAUGES
 from common.models import (
     AQIOrganization,
     Pollutant,
     ProfileQuestion,
     ProfileQuestionAnswer,
-    ProfileAnswerPollutantIndex
+    ProfileAnswerPollutantIndex,
+    VisualisationTool
 )
 from .constants import (
     SENSITIVITY_LEVELS_IDS, SENSITIVITY_LEVELS, TEMP_POLLUTANT_TRANSLATION)
@@ -25,6 +27,9 @@ class UserProfile(models.Model):
     aqi_scale = models.ForeignKey(
         AQIOrganization, verbose_name=_('Preferred AQI scale'),
         on_delete=models.DO_NOTHING, blank=True, null=True)
+    vis_tool = models.ForeignKey(
+        VisualisationTool, verbose_name=_('Preferred Vis. tool'),
+        on_delete=models.DO_NOTHING, default=GAUGES)
     modified = models.DateTimeField(_('Last Modified'), auto_now=True)
 
     def __str__(self):

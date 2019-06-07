@@ -6,7 +6,7 @@ import pandas as pd
 
 import matplotlib
 from django.conf import settings
-if settings.DEBUG:
+if not settings.DEBUG:
     matplotlib.use('agg')
 
 import matplotlib.pyplot as plt
@@ -22,7 +22,9 @@ from keras.layers import LSTM
 
 from au_epa_data.constants import DATETIME_FORMAT
 from common.models import AQIOrganization
-from .constants import FIGS_DATA_DIR, FORECASTABLE_POLLUTANTS, MODELS_DATA_DIR
+from .constants import (
+    FIGS_DATA_DIR, FORECASTABLE_POLLUTANTS, MODELS_DATA_DIR,
+    FORECASTS_DATA_DIR)
 from .utils import get_time_series, get_file_name
 
 
@@ -107,8 +109,8 @@ def _split_dataset(reframed, n_train_hours, n_features, n_input):
     values = reframed.values
     raw_train = values[:n_train_hours, :]
     raw_test = values[n_train_hours:, :]
-    print('# Training Vals', len(raw_train[:, 0]))
-    print('# Test Vals', len(raw_test[:, 0]))
+    print('# Training Rows', len(raw_train[:, 0]))
+    print('# Test Rows', len(raw_test[:, 0]))
     # split into input and outputs
     n_obs = n_input * n_features
     train_X, train_y = raw_train[:, :n_obs], raw_train[:, -1]
@@ -129,15 +131,6 @@ def _print_validation_data(train_stats, val_stats):
     plt.plot(val_stats['loss'], color='orange', label='validation')
     plt.title('model train vs validation loss')
     plt.ylabel('loss')
-    plt.xlabel('epoch')
-    plt.legend()
-
-    # plot train and validation accuracy across multiple runs
-    plt.subplot(2, 1, 2)
-    plt.plot(train_stats['accuracy'], color='green', label='train')
-    plt.plot(val_stats['accuracy'], color='red', label='validation')
-    plt.title('model train vs validation accuracy')
-    plt.ylabel('accuracy')
     plt.xlabel('epoch')
     plt.legend()
 
@@ -163,7 +156,7 @@ def _fit_model(
     model.add(LSTM(
         n_neurons, input_shape=(train_X.shape[1], train_X.shape[2])))
     model.add(Dense(1))
-    model.compile(loss='mae', optimizer='adam', metrics=['accuracy'])
+    model.compile(loss='mae', optimizer='adam')
     # fit network
     history = model.fit(
         train_X, train_y, epochs=epochs, batch_size=batch_size,
@@ -172,9 +165,6 @@ def _fit_model(
     # loss history
     train_stats['loss'] = history.history['loss']
     val_stats['loss'] = history.history['val_loss']
-    # accuracy story
-    train_stats['accuracy'] = history.history['acc']
-    val_stats['accuracy'] = history.history['val_acc']
 
     _print_validation_data(train_stats, val_stats)
     return model
@@ -188,25 +178,20 @@ def _fit_model_experiments(
           ' and {} neurons.'.format(batch_size, epochs, n_neurons))
     # design network
     train_stats = {
-        'loss': pd.DataFrame(),
-        'accuracy': pd.DataFrame(),
-        'val_loss': pd.DataFrame(),
-        'val_accuracy': pd.DataFrame(),
-        'forecasts': pd.DataFrame(),
-        'mae': [],
-        'rmse': [],
-        'precision': [],
-        'recall': [],
-        'correlation': []
+        'forecasts': [],
+        'mae': 0,
+        'rmse': 0,
+        'precision': 0,
+        'recall': 0,
+        'correlation': 0
     }
     test_stats = {
-        'forecasts': pd.DataFrame(),
-        'stats': [],
-        'mae': [],
-        'rmse': [],
-        'precision': [],
-        'recall': [],
-        'correlation': []
+        'forecasts': [],
+        'mae': 0,
+        'rmse': 0,
+        'precision': 0,
+        'recall': 0,
+        'correlation': 0
     }
     model = Sequential()
     model.add(LSTM(
@@ -216,42 +201,31 @@ def _fit_model_experiments(
 
     for i in range(epochs):
         # fit network
-        history = model.fit(
+        model.fit(
             train_X, train_y, epochs=1, batch_size=batch_size,
             # validation_data=(test_X, test_y), verbose=2, shuffle=False)
             validation_split=0.33, verbose=0, shuffle=False)
-        train_stats['loss'][str(i)] = history.history['loss']
-        train_stats['val_loss'][str(i)] = history.history['val_loss']
-        # accuracy story
-        train_stats['accuracy'][str(i)] = history.history['acc']
-        train_stats['val_accuracy'][str(i)] = history.history['val_acc']
         model.reset_states()
 
-        y_actual, y_forecast, stats = _evaluate_model(
-            model, n_features, n_input, train_X, train_y, scaler, batch_size,
-            predict_col_name)
-        # loss history
-        train_stats['forecasts'][str(i)] = y_forecast
-        train_stats['mae'].append(stats['mae'])
-        train_stats['rmse'].append(stats['rmse'])
-        train_stats['precision'].append(stats['precision']['micro'])
-        train_stats['recall'].append(stats['recall']['micro'])
-        train_stats['correlation'].append(stats['correlation'])
+    y_actual, y_forecast, stats = _evaluate_model(
+        model, n_features, n_input, train_X, train_y, scaler, batch_size,
+        predict_col_name)
+    train_stats['forecasts'] = y_forecast
+    train_stats['mae'] = stats['mae']
+    train_stats['rmse'] = stats['rmse']
+    train_stats['precision'] = stats['precision']['micro']
+    train_stats['recall'] = stats['recall']['micro']
+    train_stats['correlation'] = stats['correlation']
 
-        # Save last for stateful prediction
-        if i < epochs - 1:
-            model.reset_states()
-
-        y_actual, y_forecast, stats = _evaluate_model(
-            model, n_features, n_input, test_X, test_y, scaler, batch_size,
-            predict_col_name)
-        test_stats['forecasts'][str(i)] = y_forecast
-        test_stats['mae'].append(stats['mae'])
-        test_stats['rmse'].append(stats['rmse'])
-        test_stats['precision'].append(stats['precision']['micro'])
-        test_stats['recall'].append(stats['recall']['micro'])
-        test_stats['correlation'].append(stats['correlation'])
-        model.reset_states()
+    y_actual, y_forecast, stats = _evaluate_model(
+        model, n_features, n_input, test_X, test_y, scaler, batch_size,
+        predict_col_name)
+    test_stats['forecasts'] = y_forecast
+    test_stats['mae'] = stats['mae']
+    test_stats['rmse'] = stats['rmse']
+    test_stats['precision'] = stats['precision']['micro']
+    test_stats['recall'] = stats['recall']['micro']
+    test_stats['correlation'] = stats['correlation']
 
     return train_stats, test_stats
 
@@ -292,13 +266,13 @@ def _evaluate_model(
     y_forecast = np.concatenate((yhat, test_X[:, -(n_features - 1):]), axis=1)
     y_forecast = scaler.inverse_transform(y_forecast)
     y_forecast = y_forecast[:, 0]
-    # print(y_forecast)
+    print(y_forecast)
     # invert scaling for actual
     test_y = test_y.reshape((len(test_y), 1))
     y_actual = np.concatenate((test_y, test_X[:, -(n_features - 1):]), axis=1)
     y_actual = scaler.inverse_transform(y_actual)
     y_actual = y_actual[:, 0]
-    # print(y_actual)
+    print(y_actual)
     # calculate RMSE
     stats = {}
     stats['rmse'] = sqrt(skmet.mean_squared_error(y_actual, y_forecast))
@@ -328,11 +302,13 @@ def _evaluate_model(
 
 
 def _print_prediction(
-        test_index, y_actual, y_forecast, fig_title, whole=False):
+        test_index, y_actual, y_forecast, fig_title, date_slice=None,
+        whole=False):
     # Prediction Figure
     plt.figure(figsize=(16, 12))
     if not whole:
-        date_slice = (24 * 10, 24 * 15)
+        if date_slice is None:
+            date_slice = (24 * 10, 24 * 15)
         dts = list(map(
             lambda d: datetime.datetime.strptime(
                 d, DATETIME_FORMAT), test_index))
@@ -347,14 +323,20 @@ def _print_prediction(
             fds[date_slice[0]:date_slice[1]],
             y_forecast[date_slice[0]:date_slice[1]],
             color='red', linewidth=1, label='prediction')
-        ax.xaxis.set_major_locator(dates.HourLocator(interval=6))
+        if date_slice[1] - date_slice[0] < 25:
+            ax.xaxis.set_major_locator(dates.HourLocator(interval=1))
+        else:
+            ax.xaxis.set_major_locator(plt.MaxNLocator(24))
         ax.xaxis.set_major_formatter(hfmt)
-        plt.setp(ax.get_xticklabels(), rotation=80)
+        plt.setp(ax.get_xticklabels(), rotation=80, fontsize=20)
+        plt.setp(ax.get_yticklabels(), fontsize=20)
     else:
-        plt.plot(y_actual, color='blue', linewidth=1, label='Ground Truth')
-        plt.plot(y_forecast, color='red', linewidth=1, label='Prediction')
+        ax = plt.gca()
+        ax.xaxis.set_major_locator(plt.MaxNLocator(6))
+        ax.plot(y_actual, color='blue', linewidth=1, label='Ground Truth')
+        ax.plot(y_forecast, color='red', linewidth=1, label='Prediction')
     plt.grid(True)
-    plt.legend()
+    plt.legend(prop={'size': 26})
 
     if fig_title is not None:
         figfile_name = '{}.eps'.format(fig_title)
@@ -379,13 +361,17 @@ def _label_values(y_actual, y_forecast, pollutant, aqi_scale='AUEPA'):
 
 def run(
         file_name='10001_aq_series.csv', columns=None, predict_col='manual',
-        train_prop=0.7, n_input=24, n_output=1, epochs=100, neurons=100,
-        batch_size=24, load_from_file=None, save_file=False, evaluate=True):
+        train_prop=0.7, n_input=24, n_output=1, epochs=100, neurons=50,
+        batch_size=24, load_from_file=None, save_model=False, evaluate=True,
+        save_prediction=False):
 
     # Load dataset
     dataset = get_time_series(file_name, columns)
     n_features = len(dataset.columns)
-    n_train_hours = int(365 * 48 * train_prop)
+    n_train_hours = int(len(dataset.values[:, 0]) * train_prop)
+    # n_train_hours = int(365 * 48 * train_prop)
+    # neurons = round(
+    #     n_train_hours / (neurons * (n_features * n_input + n_output)))
 
     # Prepare dataset for supervised learning
     reframed, scaler, predict_col_name = _prepare_time_series(
@@ -400,7 +386,7 @@ def run(
         model = _fit_model(
             train_X, train_y, test_X, test_y, epochs, neurons, batch_size
         )
-        if save_file:
+        if save_model:
             model_title = get_file_name(
                 file_name.split('_')[0], dataset.columns, 'model')
             model.save(os.path.join(MODELS_DATA_DIR, model_title + '.h5'))
@@ -420,14 +406,31 @@ def run(
             model, n_features, n_input, test_X, test_y, scaler, batch_size,
             predict_col_name)
 
-        print('TestMAE=%f' % stats['mae'])
-        print('TestRMSE=%f' % stats['rmse'])
-        print('TestPRECSSN=%f' % stats['precision']['micro'])
-        print('TestRECALL=%f' % stats['recall']['micro'])
-        print('TestCORR=%f' % stats['correlation'])
+        if save_prediction:
+            prediction_f = pd.DataFrame()
+            prediction_f['date'] = test_index
+            prediction_f['actual'] = y_actual[:]
+            prediction_f['forecast'] = y_forecast[:]
+            prediction_f.index.name = 'No'
+            prediction_f.to_csv(
+                os.path.join(FORECASTS_DATA_DIR, fig_title + 'FORECAST.csv'))
 
-        # Printing the prediction
-        _print_prediction(test_index, y_actual, y_forecast, fig_title)
+            with open(os.path.join(
+                    FORECASTS_DATA_DIR, fig_title + 'METRICS.txt'), 'w+') as f:
+                f.write('TestMAE=%f\n' % stats['mae'])
+                f.write('TestRMSE=%f\n' % stats['rmse'])
+                f.write('TestPRECSSN=%f\n' % stats['precision']['micro'])
+                f.write('TestRECALL=%f\n' % stats['recall']['micro'])
+                f.write('TestCORR=%f\n' % stats['correlation'])
+        else:
+            print('TestMAE=%f' % stats['mae'])
+            print('TestRMSE=%f' % stats['rmse'])
+            print('TestPRECSSN=%f' % stats['precision']['micro'])
+            print('TestRECALL=%f' % stats['recall']['micro'])
+            print('TestCORR=%f' % stats['correlation'])
+
+            # Printing the prediction
+            _print_prediction(test_index, y_actual, y_forecast, fig_title)
 
 
 def run_experiments(
@@ -474,65 +477,64 @@ def run_experiments(
                 scaler, n_input, n_features, predict_col_name
             )
 
-            mae = pd.DataFrame()
-            mae['train'] = train_stats['mae']
-            mae['test'] = test_stats['mae']
-            rmse = pd.DataFrame()
-            rmse['train'] = train_stats['rmse']
-            rmse['test'] = test_stats['rmse']
-            precision = pd.DataFrame()
-            precision['train'] = train_stats['precision']
-            precision['test'] = test_stats['precision']
-            recall = pd.DataFrame()
-            recall['train'] = train_stats['recall']
-            recall['test'] = test_stats['recall']
-            correlation = pd.DataFrame()
-            correlation['train'] = train_stats['correlation']
-            correlation['test'] = test_stats['correlation']
+            # mae = pd.DataFrame()
+            # mae['train'] = train_stats['mae']
+            # mae['test'] = test_stats['mae']
+            # rmse = pd.DataFrame()
+            # rmse['train'] = train_stats['rmse']
+            # rmse['test'] = test_stats['rmse']
+            # precision = pd.DataFrame()
+            # precision['train'] = train_stats['precision']
+            # precision['test'] = test_stats['precision']
+            # recall = pd.DataFrame()
+            # recall['train'] = train_stats['recall']
+            # recall['test'] = test_stats['recall']
+            # correlation = pd.DataFrame()
+            # correlation['train'] = train_stats['correlation']
+            # correlation['test'] = test_stats['correlation']
 
             # Plotting
-            plt.clf()
-            fig = plt.figure(figsize=(12, 6))
-            plt.suptitle('Run #%d with %d epochs' % (r, e))
-            ax = fig.add_subplot(221)
-            ax.plot(mae['train'], color='blue')
-            ax.plot(mae['test'], color='orange')
-            ax.set_title('MAE')
-            ax = fig.add_subplot(222)
-            ax.plot(rmse['train'], color='blue')
-            ax.plot(rmse['test'], color='orange')
-            ax.set_title('RMSE')
-            ax = fig.add_subplot(223)
-            ax.set_title('PRECISION')
-            ax.plot(precision['train'], color='blue')
-            ax.plot(precision['test'], color='orange')
-            ax = fig.add_subplot(224)
-            ax.set_title('CORRELATION')
-            ax.plot(correlation['train'], color='blue')
-            ax.plot(correlation['test'], color='orange')
-            plt.savefig(
-                os.path.join(
-                    FIGS_DATA_DIR, 'epochs',
-                    '%d_epochs_%d_run_%s.png' % (e, r, f)
-                ), quality=100, format='png', pad_inches=0.25)
+            # plt.clf()
+            # fig = plt.figure(figsize=(12, 6))
+            # plt.suptitle('Run #%d with %d epochs' % (r, e))
+            # ax = fig.add_subplot(221)
+            # ax.plot(mae['train'], color='blue')
+            # ax.plot(mae['test'], color='orange')
+            # ax.set_title('MAE')
+            # ax = fig.add_subplot(222)
+            # ax.plot(rmse['train'], color='blue')
+            # ax.plot(rmse['test'], color='orange')
+            # ax.set_title('RMSE')
+            # ax = fig.add_subplot(223)
+            # ax.set_title('PRECISION')
+            # ax.plot(precision['train'], color='blue')
+            # ax.plot(precision['test'], color='orange')
+            # ax = fig.add_subplot(224)
+            # ax.set_title('CORRELATION')
+            # ax.plot(correlation['train'], color='blue')
+            # ax.plot(correlation['test'], color='orange')
+            # plt.savefig(
+            #     os.path.join(
+            #         FIGS_DATA_DIR, 'epochs',
+            #         '%d_epochs_%d_run_%s.png' % (e, r, f)
+            #     ), quality=100, format='png', pad_inches=0.25)
             print('%d, %d) TrainMAE=%f, TestMAE=%f' % (
-                r, e, mae['train'].iloc[-1], mae['test'].iloc[-1]))
+                r, e, train_stats['mae'], test_stats['mae']))
             print('%d, %d) TrainRMSE=%f, TestRMSE=%f' % (
-                r, e, rmse['train'].iloc[-1], rmse['test'].iloc[-1]))
+                r, e, train_stats['rmse'], test_stats['rmse']))
             print('%d, %d) TrainPRECSSN=%f, TrainPRECSSN=%f' % (
-                r, e, precision['train'].iloc[-1], precision['test'].iloc[-1]))
+                r, e, train_stats['precision'], test_stats['precision']))
             print('%d, %d) TrainRECALL=%f, TestRECALL=%f' % (
-                r, e, recall['train'].iloc[-1], recall['test'].iloc[-1]))
+                r, e, train_stats['recall'], test_stats['recall']))
             print('%d, %d) TrainCORRELATION=%f, TestCORRELATION=%f' % (
-                r, e, correlation['train'].iloc[-1],
-                correlation['test'].iloc[-1]))
-            plt.close()
+                r, e, train_stats['correlation'], test_stats['correlation']))
+            # plt.close()
 
-            results['mae_vals'].append(test_stats['mae'][-1])
-            results['rmse_vals'].append(test_stats['rmse'][-1])
-            results['precision_vals'].append(test_stats['precision'][-1])
-            results['recall_vals'].append(test_stats['recall'][-1])
-            results['correlation_vals'].append(test_stats['correlation'][-1])
+            results['mae_vals'].append(test_stats['mae'])
+            results['rmse_vals'].append(test_stats['rmse'])
+            results['precision_vals'].append(test_stats['precision'])
+            results['recall_vals'].append(test_stats['recall'])
+            results['correlation_vals'].append(test_stats['correlation'])
 
         results['mae'][str(e)] = results['mae_vals']
         results['rmse'][str(e)] = results['rmse_vals']
@@ -600,7 +602,7 @@ def run_print_features(
             # plt.setp(ax[group].get_xticklabels(), rotation=80)
         else:
             ax[group].plot(
-                values[1500:3500, group],
+                values[:, group],
                 label=dataset.columns[group]
             )
             ax[group].xaxis.set_label('Time')
@@ -622,3 +624,18 @@ def run_print_features(
             format='eps', pad_inches=0.25, bbox_inches='tight')
     else:
         plt.show()
+
+
+def run_print_forecast(
+        file_name='10001_aq_series.csv', fig_title=None, whole=False,
+        date_slice=None):
+    dataset = get_time_series(file_name, file_dir=FORECASTS_DATA_DIR)
+
+    y_actual = dataset['actual']
+    y_forecast = dataset['forecast']
+    test_index = dataset.index
+
+    # Printing the prediction
+    _print_prediction(
+        test_index, y_actual, y_forecast, fig_title, date_slice=date_slice,
+        whole=whole)

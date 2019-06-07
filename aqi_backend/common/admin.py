@@ -8,7 +8,8 @@ from .models import (
     Pollutant,
     ProfileQuestion,
     ProfileQuestionAnswer,
-    ProfileAnswerPollutantIndex
+    ProfileAnswerPollutantIndex,
+    VisualisationTool
 )
 
 
@@ -74,3 +75,4 @@ admin.site.register(AQICategoryThreshold, AQICategoryThresholdAdmin)
 admin.site.register(Pollutant, PollutantAdmin)
 admin.site.register(ProfileQuestion, ProfileQuestionAdmin)
 admin.site.register(ProfileQuestionAnswer, ProfileQuestionAnswerAdmin)
+admin.site.register(VisualisationTool)

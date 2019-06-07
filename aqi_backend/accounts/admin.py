@@ -29,7 +29,7 @@ class UserProfileInline(nested_admin.NestedStackedInline):
 class ExtendedUserAdmin(nested_admin.NestedModelAdmin, UserAdmin):
     inlines = (UserProfileInline, )
     list_display = (UserAdmin.list_display + (
-        'get_age', 'get_colour_blindness', 'get_aqi_scale'))
+        'get_age', 'get_colour_blindness', 'get_aqi_scale', 'get_vis_tool'))
 
     def get_age(self, obj):
         return obj.profile.age
@@ -46,6 +46,11 @@ class ExtendedUserAdmin(nested_admin.NestedModelAdmin, UserAdmin):
         return obj.profile.aqi_scale
     get_aqi_scale.short_description = 'Preferred AQI Scale'
     get_aqi_scale.admin_order_field = 'profile__aqi_scale'
+
+    def get_vis_tool(self, obj):
+        return obj.profile.vis_tool
+    get_vis_tool.short_description = 'Preferred Vis. Tool'
+    get_vis_tool.admin_order_field = 'profile__vis_tool'
 
 
 admin.site.unregister(UserModel)

@@ -1,0 +1,7 @@
+GAUGES = 'Gauges'
+PINS = 'Pins'
+PINS_TEXT = 'Pins + Text'
+HEATMAPS = 'Heatmaps'
+HOTSPOTS = 'Hotspots'
+
+VISUALISATION_TOOLS = (GAUGES, PINS, PINS_TEXT, HEATMAPS, HOTSPOTS)

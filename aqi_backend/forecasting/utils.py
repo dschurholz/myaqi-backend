@@ -43,8 +43,9 @@ def mean_absolute_percentage_error(y_true, y_pred):
     return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
 
 
-def get_time_series(file_name, columns):
-    file = os.path.join(AQ_DATA_DIR, file_name)
+def get_time_series(file_name, columns=None, file_dir=None):
+    file = os.path.join(
+        AQ_DATA_DIR if file_dir is None else file_dir, file_name)
     index_col = 1
     if columns is not None:
         columns = ['date'] + columns

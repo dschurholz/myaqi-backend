@@ -190,3 +190,15 @@ class ProfileAnswerPollutantIndex(models.Model):
     def __str__(self):
         return 'Index {0}-{1}-{2}'.format(
             self.answer.question.order, self.answer.order, self.pollutant)
+
+
+class VisualisationTool(models.Model):
+    name = models.CharField(_("Name"), max_length=127, primary_key=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'visualisation_tool'
+        verbose_name = _('Visualisation Tool')
+        verbose_name_plural = _('Visualisation Tools')
