@@ -20,8 +20,10 @@ from forecasting.constants import (
 
 
 class WorldBorder(models.Model):
-    # Regular Django fields corresponding to the attributes in the
-    # world borders shapefile.
+    """
+    Regular Django fields corresponding to the attributes in the world borders
+    shapefile.
+    """
     name = models.CharField(max_length=50)
     area = models.IntegerField()
     pop2005 = models.IntegerField(_('Population 2005'))
@@ -49,6 +51,10 @@ class WorldBorder(models.Model):
 
 
 class Fire(models.Model):
+    """
+    Model that saves the historical fire incidents in the Melbourne area. Data
+    from the EPA Victoria historical fires dataset.
+    """
     firetype = models.CharField(_('Fire Type'), max_length=8)
     season = models.IntegerField(_('Season'))
     fire_no = models.CharField(_('Fire Number'), max_length=25)
@@ -73,6 +79,21 @@ class Fire(models.Model):
     @classmethod
     def get_fire_contains_situation(
             cls, locations, start_date=None, end_date=None, seasons=[]):
+        """ Returns the fires that are strictly contained in a given set of
+        areas.
+
+        :param areas: the size of the areas to consider, in meters.
+        :type areas: int[]
+        :param start_date: date and time from where to start retrieving the
+            data.
+        :type start_date: datetime.datetime
+        :param end_date: date and time on which to stop retrieving the data.
+        :type end_date: datetime.
+        :param seasons: in which seasons to consider the fire from.
+        :type seasons: int[].
+        :rtype: Fire[]
+
+        """
         fires = cls.objects.all()
         queries = [Q(geom__contains=location) for location in locations]
         query = queries.pop()
@@ -90,6 +111,20 @@ class Fire(models.Model):
     @classmethod
     def get_fire_intersects_situation(
             cls, areas, start_date=None, end_date=None, seasons=[]):
+        """ Returns the fires that are in or intersect a given set of areas.
+
+        :param areas: the size of the areas to consider, in meters.
+        :type areas: int[]
+        :param start_date: date and time from where to start retrieving the
+            data.
+        :type start_date: datetime.datetime
+        :param end_date: date and time on which to stop retrieving the data.
+        :type end_date: datetime.
+        :param seasons: in which seasons to consider the fire from.
+        :type seasons: int[].
+        :rtype: Fire[]
+
+        """
         fires = cls.objects.all()
         queries = [Q(geom__intersects=area) for area in areas]
         query = queries.pop()
@@ -106,6 +141,25 @@ class Fire(models.Model):
 
     @classmethod
     def fires_for_forecast(cls, areas, start_date, end_date):
+        """ Prepares a list of fire incidents to be added to a dataset for a
+        AQ monitoring station and to be used in a prediction procedure, within
+        a given area surrounding the monitoring station.
+
+        :param areas: the size of the areas to consider, in meters.
+        :type areas: int[]
+        :param start_date: date and time from where to start retrieving the
+            data.
+        :type start_date: datetime.datetime
+        :param end_date: date and time on which to stop retrieving the data.
+        :type end_date: datetime.datetime
+        :rtype: dict
+
+        Returns:
+            data (dict): a dict that has a date key which contains all the
+            ordered date strings and then one key called `fires` that has as a
+            value all the corresponding fires that happened at the given date.  
+
+        """
         from forecasting.utils import get_datetime_span_dict
 
         fires = cls.objects.all()
@@ -171,18 +225,27 @@ class TrafficStation(models.Model):
 
     @property
     def max_volume(self):
+        """
+        Returns the maximum volume that this traffic station has recorded.
+        """
         return TrafficFlow.objects.filter(
             nb_scats_site=self.station_id).aggregate(
                 max=Max('traffic_volume'))['max']
 
     @property
     def avg_volume(self):
+        """
+        Returns the average volume that this traffic station has recorded.
+        """
         return TrafficFlow.objects.filter(
             nb_scats_site=self.station_id).aggregate(
                 avg=Avg('traffic_volume'))['avg']
 
     @property
     def quantiles(self):
+        """
+        Returns 5 20% quantile limits of all the traffic volumes.
+        """
         data = TrafficFlow.objects.filter(
             nb_scats_site=self.station_id).values_list(
                 'traffic_volume', flat=True)
@@ -197,6 +260,10 @@ class TrafficStation(models.Model):
 
 
 class TrafficFlow(models.Model):
+    """
+    Model that saves traffic flow information for some SCATS traffic stations
+    across the Melbourne urban area. 
+    """
     nb_scats_site = models.PositiveIntegerField(_('NB Scats Site'))
     qt_interval_count = models.DateTimeField(_('QT Interval Count'))
     region_name = models.CharField(_('Region Name'), max_length=3)
@@ -206,6 +273,25 @@ class TrafficFlow(models.Model):
     @classmethod
     def traffic_flows_for_forecast(
             cls, traffic_flow_ids, start_date, end_date):
+        """ Prepares a list of traffic flows to be added to a dataset for a
+        AQ monitoring station and to be used in a prediction procedure.
+
+        :param traffic_flow_ids: the IDs of the traffic monitoring sites to
+            use.
+        :type traffic_flow_ids: int[]
+        :param start_date: date and time from where to start retrieving the
+            data.
+        :type start_date: datetime.datetime
+        :param end_date: date and time on which to stop retrieving the data.
+        :type end_date: datetime.datetime
+        :rtype: dict
+
+        Returns:
+            data (dict): a dict that has a date key which contains all the
+            ordered date strings and then one key for each station and the 
+            corresponding traffic volumes for each date.  
+
+        """
         from forecasting.utils import get_datetime_span_dict
 
         traffic_flows = cls.objects.filter(

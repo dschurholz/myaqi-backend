@@ -24,6 +24,18 @@ from .constants import (
 
 
 def get_datetime_span_dict(start_date, end_date, empty_type=[]):
+    """Returns a dictionary of dates spanning between start_date and end_date.
+    The keys are the datestrings and the empty_type will be the value.
+
+    :param start_date: date and time from where to start the range.
+    :type start_date: datetime.datetime
+    :param end_date: date and time on which to stop the range.
+    :type end_date: datetime.datetime
+    :param empty_type: default value for each key in the range. 
+    :type empty_type: any
+    :rtype: dict
+    
+    """
     span_dict = {}
     print(start_date, end_date)
     date = timezone.make_aware(start_date, is_dst=False)
@@ -38,12 +50,32 @@ def get_datetime_span_dict(start_date, end_date, empty_type=[]):
 
 
 def mean_absolute_percentage_error(y_true, y_pred):
+    """Returns the MAPE error of a ground truth vs. predicted values array.
+
+    :param y_true: ground truth of a pollutant values.
+    :type y_true: numpy.array
+    :param y_pred: predicted values for a pollutant.
+    :type y_pred: numpy.array
+    :rtype: float
+
+    """
     y_true, y_pred = np.array(y_true), np.array(y_pred)
 
     return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
 
 
 def get_time_series(file_name, columns=None, file_dir=None):
+    """Load a pollutant levels timeseries dataset from a .csv file.
+
+    :param file_name: CSV file from which to load the dataset values.
+    :type file_name: string
+    :param columns: a list of column names from the CSV file to load.
+    :type columns: string[]
+    :param file_dir: if the file to load is not in ./data/air_quality
+    :type file_dir: string
+    :rtype: pandas.DataFrame
+
+    """
     file = os.path.join(
         AQ_DATA_DIR if file_dir is None else file_dir, file_name)
     index_col = 1
@@ -59,11 +91,26 @@ def get_time_series(file_name, columns=None, file_dir=None):
 
 
 def get_file_name(site_id, variable_list, extra=''):
+    """Create a file name for a forecast made with a given set of variables.
+
+    :param site_id: AQ monitoring station site id.
+    :type site_id: string or int
+    :param variable_list: a list of the variables used for the prediction.
+    :type variable_list: string[]
+    :param extra: any extra information to add to the file name.
+    :type extra: string
+    :rtype: string
+
+    """
     return '_'.join([site_id, '_'.join(variable_list), extra])
 
 
 def get_mult_by_attr(array, attr, value, extra=lambda d: d):
-    # array has to be sorted
+    """
+    Helper function to get objects with the same attribute value from an array.
+    
+    .. note:: *array* has to be sorted
+    """
     results = []
     in_range = False
     for x in array:
@@ -81,6 +128,31 @@ def get_experimental_data(
         start_date=datetime.datetime(2017, 1, 1, 0, 0),
         end_date=datetime.datetime(2018, 12, 31, 23, 0),
         include_fires=False, save_file=False):
+    """Generate the dictionary with experimental data ready to be loaded and 
+    run with the forecasting module.
+
+    :param start_date: date and time from where to start retrieving the data.
+    :type start_date: datetime.datetime
+    :param end_date: date and time on which to stop retrieving the data.
+    :type end_date: datetime.datetime
+    :param include_fires: if to add information regarding the fire incidents.
+    :type include_fires: boolean
+    :param save_file: if to save the resulting dict into a file.
+    :type save_file: boolean
+    :rtype: dict
+
+    Result dict:
+        The resulting dict has 3 to 4 keys (depending if *include_fires* is
+        `true`). Example::
+            {
+                'sites': [{site1...}, {site2...}, ...],
+                'traffic_stations': [{traffic_station1...}, {traffic_station2...}, ...],
+                'timeline': {date1: [pol1, pol2, ...], date2: [pol1, pol2, ...], ...},
+                'fires': [fire1, fire2, ...]
+            }
+
+    """
+
     timeline = get_datetime_span_dict(
         start_date, end_date, empty_type={
             'sites': {site: [] for site in AU_SITES_FORECAST},
@@ -155,6 +227,19 @@ def get_sites_fires(
         start_date=datetime.datetime(2017, 1, 1, 0, 0),
         end_date=datetime.datetime(2018, 12, 31, 23, 0),
         seasons=[2017, 2018]):
+    """Generate a list of fire incidents that affect the AQ monitoring stations
+    in the AU_SITES_FORECAST list.
+
+    :param start_date: date and time from where to start retrieving the data.
+    :type start_date: datetime.datetime
+    :param end_date: date and time on which to stop retrieving the data.
+    :type end_date: datetime.datetime
+    :param seasons: the years from which to consider the fires (because
+        incidents of previous years may span over the entered date range).
+    :type seasons: int[]
+    :rtype: Fire[]
+
+    """
     sites_fire_areas = []
     for s in Site.objects.filter(site_id__in=AU_SITES_FORECAST):
         s.set_fire_area_radius()

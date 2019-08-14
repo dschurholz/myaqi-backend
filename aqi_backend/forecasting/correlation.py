@@ -2,12 +2,20 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-from .lstm_forecast import get_time_series
+from .utils import get_time_series
 from .constants import FIGS_DATA_DIR
+
 
 
 def run(file_name='10001_aq_series.csv', columns=None,
         fig_title='AQ Variables Correlation'):
+    """Prints a correlation heatmap to an eps file.
+
+    :param file_name: (string) the .csv file from where to read the variables and data.
+    :param columns: (string[]) names of the columns to be included from the file.
+    :param fig_title: (string) a title for the figure, used also for the printed filename. 
+    
+    """
     data = get_time_series(file_name, columns)
     corr = data.corr()
     fig = plt.figure()

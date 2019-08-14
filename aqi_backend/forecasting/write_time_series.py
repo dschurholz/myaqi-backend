@@ -11,6 +11,25 @@ from .constants import (
 def run(aq_sites=AU_SITES_FORECAST, pollutants=SITES_MONITORS,
         include_traffic=False, include_fires=False, start_date=None,
         end_date=None):
+    """ Writes the desired AQ data from the system databases to a CSV file, in
+    a format that can be readily be used with the lstm_forecast and correlation
+    modules.
+
+    :param aq_sites: the IDs of the monitoring sites to use, if more than one
+        multiple files will be written (one per site).
+    :type aq_sites: int[]
+    :param pollutants: list of the pollutants to consider for each site.
+    :type pollutants: string[]
+    :param include_traffic: if to include traffic flow information in the file.
+    :type include_traffic: boolean
+    :param include_fires: if to include fire incidents information in the file.
+    :type include_fires: boolean
+    :param start_date: date and time from where to start retrieving the data.
+    :type start_date: datetime.datetime
+    :param end_date: date and time on which to stop retrieving the data.
+    :type end_date: datetime.datetime
+
+    """
     sites = Site.objects.filter(site_id__in=aq_sites)
     for s in sites:
         s_id = str(s.site_id)

@@ -10,29 +10,38 @@ This repository contains a Django backend project for the MyAQI tool:
 
 ### Used technologies and python dependencies
 
+*Backend:*
+
  - Python 3.6
  - Postgresql 10.10 + PostGIS 2.4
  - [Django](https://github.com/django/django)
  - [Psycopg2](https://github.com/psycopg/psycopg2)
  - [Django Suit](https://github.com/darklow/django-suit)
- - [Bing Maps API](http://dev.virtualearth.net/REST/v1/Traffic/Incidents/)
- - [Core-UI](https://coreui.io/)
  - [Django Channels](https://github.com/django/channels)
  - [Django Rest Framework](https://www.django-rest-framework.org/)
  - [Django](https://www.djangoproject.com/)
- - [Google Maps JavaScript API](https://www.djangoproject.com/)
  - [Keras](https://keras.io/)
  - [Matplot Lib](https://matplotlib.org/)
  - [Pandas](https://pandas.pydata.org/)
- - [PostGIS](https://www.djangoproject.com/)
+ - [PostGIS](https://postgis.net/)
  - [PostgreSQL](https://www.postgresql.org/)
  - [Sklearn](https://scikit-learn.org/stable/)
  - [Tensor Flow](https://www.tensorflow.org/)
+
+*Data sources:*
+
+ - [Bing Maps API](http://dev.virtualearth.net/REST/v1/Traffic/Incidents/)
+ - [Google Maps JavaScript API](https://developers.google.com/maps/documentation/javascript/tutorial)
  - [Victoria Emergency API](http://emergency.vic.gov.au/public/osom-geojson.json)
  - [Victoria EPA AirWatch API](http://sciwebsvc.epa.vic.gov.au/aqapi/)
  - [Victoria Roads API](https://traffic.vicroads.vic.gov.au/maps.js)
  - [Weather Bit API](https://api.weatherbit.io/v2.0/forecast/airquality)
- - [ReactJS](https://reactjs.org/) (On Frontend application) ---> [MyAQI Frontend Repository](https://www.github.com/dschurholz/myaqi-frontend.git)
+
+*Frontend:*
+[MyAQI Frontend Repository](https://www.github.com/dschurholz/myaqi-frontend.git)
+
+ - [ReactJS](https://reactjs.org/)
+ - [Core-UI](https://coreui.io/)
 
 For the exact versions check the project's `requirements.txt` file.
 
@@ -104,3 +113,7 @@ Create a superuser for the admin interface by running:
     $ ./manage.py createsuperuser
 
 and follow the prompt.
+
+### Data sets and Populating Databases
+
+The MyAQI tool requires many different datasets to work properly. To try the PostGIS installation you can install the World Borders dataset, it could also be handy for further expansions of the tool. Follow the steps in [Geo Data Readme](https://github.com/dschurholz/myaqi-backend/tree/master/aqi_backend/geo_data).

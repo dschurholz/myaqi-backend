@@ -28,8 +28,18 @@ from .constants import (
 from .utils import get_time_series, get_file_name
 
 
-# convert series to supervised learning
 def _series_to_supervised(data, n_in=1, n_out=1, dropnan=True):
+    """ Convert a series to a supervised learning format for algorithm input.
+
+    Parameters:
+        data (list or numpy.array): pollutants time series values.
+        n_in (int): number of previous time lags to consider for prediction.
+        n_out (int): number of next time lags to output for prediction.
+
+    Returns:
+        agg (str1):The string which gets reversed. 
+    
+    """
     n_vars = 1 if type(data) is list else data.shape[1]
     df = pd.DataFrame(data)
     cols, names = list(), list()
@@ -53,16 +63,37 @@ def _series_to_supervised(data, n_in=1, n_out=1, dropnan=True):
     return agg
 
 
-# normalize train and test data to [0, 1]
 def _normalize(values):
-    # fit scaler
+    """ Normalise a set of values to a range between 0 and 1.
+
+    Parameters:
+        values (numpy.array): pollutants time series values.
+
+    Returns:
+        scaler (MinMaxScaler): the sklearn scaler with the loaded values.
+        scaled (numpy.array): the scaled (normalised) values.
+    
+    """
     scaler = MinMaxScaler(feature_range=(0, 1))
     scaled = scaler.fit_transform(values)
     return scaler, scaled
 
 
 def _prepare_time_series(dataset, predict_col, n_input, n_output):
-    # load dataset
+    """ Split dataset into training and test set.
+
+    Parameters:
+        reframed (pd.DataFrame): normalised pollutants time series values.
+        n_train_hours (int): number of hours to consider as training data.
+        n_features (int): number of variables.
+        n_input (int): number of previous time lags to consider.
+
+    Returns:
+        reframed (pd.DataFrame): the normalized and prepared dataset.
+        scaler (sklearn.MinMaxScaler): the scaler with loaded values.
+        predict_col_name (string): the name of the column to be predicted. 
+    
+    """
     values = dataset.values
     col_num = len(dataset.columns)
     # ===================================================
@@ -76,7 +107,7 @@ def _prepare_time_series(dataset, predict_col, n_input, n_output):
     scaler, scaled = _normalize(values)
     # frame as supervised learning
     reframed = _series_to_supervised(scaled, n_input, n_output)
-    # drop columns we don't want to predict
+    # if we want the user to be prompted for the colum to be predicted
     if predict_col == 'manual':
         try:
             predict_col = int(input(
@@ -85,6 +116,7 @@ def _prepare_time_series(dataset, predict_col, n_input, n_output):
         except ValueError:
             predict_col = 1
 
+    # drop columns we don't want to predict
     predict_col_name = dataset.columns[predict_col - 1]
     reframed_col_num = len(reframed.columns)
     output_start = n_input * col_num
@@ -105,6 +137,23 @@ def _prepare_time_series(dataset, predict_col, n_input, n_output):
 
 
 def _split_dataset(reframed, n_train_hours, n_features, n_input):
+    """ Split dataset into training and test set.
+
+    Parameters:
+        reframed (pd.DataFrame): normalised pollutants time series values.
+        n_train_hours (int): number of hours to consider as training data.
+        n_features (int): number of variables.
+        n_input (int): number of previous time lags to consider.
+
+    Returns:
+        train_X (np.array): training X data.
+        train_y (np.array): training y data.
+        test_X (np.array): test X data.
+        test_y (np.array): test y data.
+        raw_train (np.array): raw split training data.
+        raw_train (np.array): raw split test data.
+    
+    """
     # split into train and test sets
     values = reframed.values
     raw_train = values[:n_train_hours, :]
@@ -124,7 +173,9 @@ def _split_dataset(reframed, n_train_hours, n_features, n_input):
 
 
 def _print_validation_data(train_stats, val_stats):
-    # plot train and validation loss across multiple runs
+    """
+    Plot train and validation loss across multiple runs.
+    """
     plt.figure()
     plt.subplot(2, 1, 1)
     plt.plot(train_stats['loss'], color='blue', label='train')
@@ -139,7 +190,22 @@ def _print_validation_data(train_stats, val_stats):
 
 def _fit_model(
         train_X, train_y, test_X, test_y, epochs, n_neurons, batch_size):
+    """ Fit the Keras LSTM model with the training and test data and
+    meta-parameters. Also prints the validation performance
 
+    Parameters:
+        train_X (np.array): training X data.
+        train_y (np.array): training y data.
+        test_X (np.array): test X data.
+        test_y (np.array): test y data.
+        epochs (int): number of times to run the model.
+        n_neurons (int): number of neurons for the LSTM hidden layer.
+        batch_size (int): size of values pero run batch.
+
+    Returns:
+        model (Keras-model): the model on the finished training state.
+    
+    """
     print('Model training with batch_size: {}, epochs: {} and {} '
           'neurons.'.format(batch_size, epochs, n_neurons))
     # design network
@@ -173,6 +239,27 @@ def _fit_model(
 def _fit_model_experiments(
         train_X, train_y, test_X, test_y, epochs, n_neurons, batch_size,
         scaler, n_input, n_features, predict_col_name):
+    """ A more controlable version of the _fit_model function, to gain more
+    insights on the correct selection of hyperparameters. Evaluates the model
+    after each epoch.
+
+    Parameters:
+        train_X (np.array): training X data.
+        train_y (np.array): training y data.
+        test_X (np.array): test X data.
+        test_y (np.array): test y data.
+        epochs (int): number of times to run the model.
+        n_neurons (int): number of neurons for the LSTM hidden layer.
+        batch_size (int): size of values pero run batch.
+        scaler (sklearn.MinMaxScaler): scaler for the _evaluate function.
+        n_input (int): number of previous time_lags considered.
+        n_features (int): number of variables considered.
+        predict_col_name (string): name of the column to be predicted.
+
+    Returns:
+        train_stats, test_stats: the statistics for the training and test runs.
+    
+    """    
 
     print('Running model training experiments with batch_sizes: {}, epochs: {}'
           ' and {} neurons.'.format(batch_size, epochs, n_neurons))
@@ -230,22 +317,38 @@ def _fit_model_experiments(
     return train_stats, test_stats
 
 
-def recall_curve(Y_test, y_score, labels):
+def recall_curve(test_y, y_score, labels):
+    """ Calculate the precision and recall for the predicted values.
+
+    :param test_y: test y (predicted) data.
+    :type test_y: np.array
+    :param y_score: the according label for each value in test_y.
+    :type y_score: np.array
+    :param labels: all the possible labels that a value could get assigned.
+    :type labels: string[]
+
+    :rtype: tuple(dict, dict)
+    Returns:
+        - precision (dict): micro and macro precision values for the inputs.
+        - recall (dict): micro and macro recall values for the inputs.
+    
+    """
+
     # For each class
     precision = dict()
     recall = dict()
 
     # A "macro-average": quantifying score on each class separately
     recall["macro"] = skmet.recall_score(
-        Y_test, y_score, labels=labels, average="macro")
+        test_y, y_score, labels=labels, average="macro")
     precision["macro"] = skmet.precision_score(
-        Y_test, y_score, labels=labels, average="macro")
+        test_y, y_score, labels=labels, average="macro")
 
     # A "micro-average": quantifying score on all classes jointly
     recall["micro"] = skmet.recall_score(
-        Y_test, y_score, labels=labels, average="micro")
+        test_y, y_score, labels=labels, average="micro")
     precision["micro"] = skmet.precision_score(
-        Y_test, y_score, labels=labels, average="micro")
+        test_y, y_score, labels=labels, average="micro")
 
     # print('Precision score macro: {} and micro: {}'
     #       .format(precision['macro'], precision['micro']))
@@ -258,6 +361,27 @@ def recall_curve(Y_test, y_score, labels):
 def _evaluate_model(
         model, n_features, n_input, test_X, test_y, scaler, batch_size,
         predict_col_name):
+    """ Evaluates the trained model with test values and returns predictions
+    and desired staistics.
+
+    Parameters:
+        model (Keras model): the model with the trained state.
+        n_features (int): number of variables considered.
+        n_input (int): number of previous time_lags considered.
+        test_X (np.array): test X data.
+        test_y (np.array): test y data.
+        scaler (sklearn.MinMaxScaler): scaler for the _evaluate function.
+        batch_size (int): size of values pero run batch.
+        predict_col_name (string): name of the column to be predicted.
+
+    Returns:
+        y_actual (string[]): original ground truth values.
+        y_forecast (string[]): forecasted values.
+        stats (dict): rmse, mae, correlation, precision and recall satistics for the
+            prediction.
+    
+    """ 
+    
     # make a prediction
     # print(test_X.shape)
     yhat = model.predict(test_X)
@@ -304,6 +428,20 @@ def _evaluate_model(
 def _print_prediction(
         test_index, y_actual, y_forecast, fig_title, date_slice=None,
         whole=False):
+    """ Print the forecasted vs. ground truth values into a graph.
+
+    Parameters:
+        test_index (Keras model): the model with the trained state.
+        y_actual: original ground truth values.
+        y_forecast: forecasted values.
+        fig_title (string): name for figure and for file to print to.
+        date_slice (tuple(int, int)): range of hours within the dataset to
+            consider.
+        whole (boolean): if to slice the dataset or consider it completely
+            (separate option because of the need for axis lables change).
+    
+    """ 
+
     # Prediction Figure
     plt.figure(figsize=(16, 12))
     if not whole:
@@ -348,6 +486,22 @@ def _print_prediction(
 
 
 def _label_values(y_actual, y_forecast, pollutant, aqi_scale='AUEPA'):
+    """ Gets the list of AQI categories for a list of concentration levels
+    for a given pollutant and a given AQI organisation.
+
+    Parameters:
+        y_actual (numpy.array): original ground truth values.
+        y_forecast (numpy.array): forecasted values.
+        pollutant (string): abbreviation of the pollutant (e.g., CO)
+        aqi_scale (string): abbreviation of the AQI scale to use (e.g., AUEPA)
+
+    Returns:
+        y_actual_labels (string[]): a list of the abbreviations of each AQI
+            category assigned to each value of y_actual.
+        y_forecast_labels (string[]): a list of the abbreviations of each AQI
+            category assigned to each value of y_forecast.
+    
+    """ 
     try:
         aqi_organization = AQIOrganization.objects.get(pk=aqi_scale)
     except AQIOrganization.DoesNotExist:
@@ -364,6 +518,39 @@ def run(
         train_prop=0.7, n_input=24, n_output=1, epochs=100, neurons=50,
         batch_size=24, load_from_file=None, save_model=False, evaluate=True,
         save_prediction=False):
+    """ Main function. Runs a training and forecast experiment with the given
+    parameters.
+
+    :param file_name: CSV file from which to load the experiment data.
+    :type file_name: string
+    :param columns: the columns from the CSV file to include in the execution.
+    :type columns: string[]
+    :param predict_col: index of column to be predicted.
+    :type predict_col: int
+    :param train_prop: percentage of dataset values to use as training set.
+    :type train_prop: float
+    :param n_input: number of previous time lags to consider in prediction.
+    :type n_input: int
+    :param n_output: number of future time lags to predict for pollutant.
+    :type n_output: int
+    :param epochs: number of iterations to run training phase.
+    :type epochs: int
+    :param neurons: number of neurons in the LSTM hidden layer.
+    :type neurons: int
+    :param batch_size: size of values per run to use in training.
+    :type batch_size: int
+    :param load_from_file: file path from which to load an already run Keras
+        model from.
+    :type load_from_file: string
+    :param save_model: if to save the model in a temporary file.
+    :type save_model: boolean
+    :param evaluate: if to produce an evaluation of the model after training.
+    :type evaluate: boolean
+    :param save_prediction: if to save the predicted vs. ground truth values in
+        a file.
+    :type save_prediction: int
+
+    """
 
     # Load dataset
     dataset = get_time_series(file_name, columns)
@@ -435,9 +622,35 @@ def run(
 
 def run_experiments(
         file_name='10001_aq_series.csv', columns=None, predict_col='manual',
-        train_prop=0.7, n_input=24, n_output=1, runs=1,
-        epochs=[2, 3], neurons=2,
-        batch_sizes=24):
+        train_prop=0.7, n_input=24, n_output=1, runs=1, epochs=[2, 3],
+        neurons=2, batch_sizes=24):
+    """ Runs the _fit_model_experiments function to tweak the hyper-parameters.
+    TO-DO: The default set is to test the efficiency depending the number of
+    epochs. To test batch_size or number of neurons, the code has to be
+    changed.
+
+    :param file_name: CSV file from which to load the experiment data.
+    :type file_name: string
+    :param columns: the columns from the CSV file to include in the execution.
+    :type columns: string[]
+    :param predict_col: index of column to be predicted.
+    :type predict_col: int
+    :param train_prop: percentage of dataset values to use as training set.
+    :type train_prop: float
+    :param n_input: number of previous time lags to consider in prediction.
+    :type n_input: int
+    :param n_output: number of future time lags to predict for pollutant.
+    :type n_output: int
+    :param runs: number of complete cycles to run.
+    :type runs: int
+    :param epochs: number of iterations to run training phase.
+    :type epochs: int[]
+    :param neurons: number of neurons in the LSTM hidden layer.
+    :type neurons: int
+    :param batch_size: size of values per run to use in training.
+    :type batch_size: int
+
+    """
 
     f = file_name.split('.csv')[0]
 
@@ -565,6 +778,22 @@ def run_experiments(
 def run_print_features(
         file_name='10001_aq_series.csv', columns=None, save_fig=False,
         fig_title=None, sliced=None):
+    """ Plots the features of a dataset for a graphical view of the PDF of each
+    variable.
+
+    :param file_name: CSV file from which to load the variables time series.
+    :type file_name: string
+    :param columns: the columns from the CSV file to include in the picture.
+    :type columns: string[]
+    :param save_fig: if to save the plot to a picture file.
+    :type save_fig: boolean
+    :param fig_title: the name of the plot and file name if saved.
+    :type fig_title: string
+    :param sliced: index range to consider when plotting the time series
+    :type sliced: tuple(int, int)
+
+    """
+
     dataset = get_time_series(file_name, columns)
     values = dataset.values
     # specify columns to plot
@@ -629,6 +858,18 @@ def run_print_features(
 def run_print_forecast(
         file_name='10001_aq_series.csv', fig_title=None, whole=False,
         date_slice=None):
+    """ Plots the predicted vs. ground truth values of a prediction run.
+
+    :param file_name: CSV file from which to load the predicted time series.
+    :type file_name: string
+    :param fig_title: the name of the plot and file name if saved.
+    :type fig_title: string
+    :param whole: if to use the whole dataset when plotting.
+    :type whole: boolean
+    :param date_slice: index range to consider when plotting the time series
+    :type date_slice: tuple(int, int)
+
+    """
     dataset = get_time_series(file_name, file_dir=FORECASTS_DATA_DIR)
 
     y_actual = dataset['actual']

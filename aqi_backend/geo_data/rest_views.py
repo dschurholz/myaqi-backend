@@ -17,7 +17,7 @@ class FireViewSet(viewsets.ReadOnlyModelViewSet):
 
 class TrafficFlowViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    Use this endpoint to retrieve fires.
+    Use this endpoint to retrieve traffic flows.
     """
     queryset = TrafficFlow.objects.all()
     serializer_class = TrafficFlowSerializer
