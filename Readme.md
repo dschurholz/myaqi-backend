@@ -116,4 +116,8 @@ and follow the prompt.
 
 ### Data sets and Populating Databases
 
-The MyAQI tool requires many different datasets to work properly. To try the PostGIS installation you can install the World Borders dataset, it could also be handy for further expansions of the tool. Follow the steps in [Geo Data Readme](https://github.com/dschurholz/myaqi-backend/tree/master/aqi_backend/geo_data).
+The MyAQI tool requires many different datasets to work properly. Follow the steps in [Geo Data Readme](https://github.com/dschurholz/myaqi-backend/tree/master/aqi_backend/geo_data) and in [AU EPA Data Readme](https://github.com/dschurholz/myaqi-backend/tree/master/aqi_backend/au_epa_data) to populate the database with useful data to try the MyAQI tool functions.
+
+### Forecasting procedures
+
+To run forecasting examples and get statistics follow these instructions: [Forecasting Readme](https://github.com/dschurholz/myaqi-backend/tree/master/aqi_backend/forecasting).

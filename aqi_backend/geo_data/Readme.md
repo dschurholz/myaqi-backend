@@ -21,8 +21,16 @@ Check the GeoDjango installation by opening the following link [http://localhost
 
 ## Historical Traffic Data
 
+First download the `traffic.zip` file from [here](https://drive.google.com/open?id=1ObIRuFzK-nJj5WIq0zdXKt7kJ7c0hQ6c).
 To install the historical traffic information for 2017 and 2018 for 6 traffic measuring stations in Melbourne, execute the following commands:
 
+    $ cd geo_data/
+    $ mkdir -p data/traffic/
+    $ cd data/traffic
+    $ mv path/to/traffic.zip .
+    $ unzip traffic.zip
+    $ unzip 2017.zip && unzip 2018.zip
+    $ cd ../../..
     $ ./manage.py shell
 
 in the python console run:
@@ -32,8 +40,15 @@ in the python console run:
 
 ## Historical Fire Incidents Data
 
+First download the `fire.zip` file from [here](https://drive.google.com/open?id=1EMk5UfIWfPZbyEy0lwG7tyoX9oRjcQcn).
 To install the historical fire incidents information for 2017 and 2018 all over the Victoria region, execute the following commands:
 
+    $ cd geo_data/
+    $ mkdir data/
+    $ cd data/
+    $ mv path/to/fire.zip .
+    $ unzip fire.zip
+    $ cd ..
     $ ./manage.py shell
 
 in the python console run:
