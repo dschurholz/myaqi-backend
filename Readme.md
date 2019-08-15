@@ -1,6 +1,6 @@
 # MyAQI Backend & API
 
-This repository contains a Django backend project for the MyAQI tool:
+This project implements the MyAQI backend application for air quality monitoring and prediction in the Melbourne Urban area in Victoria, Australia. It is developed as a Master Thesis proof-of-concept in the context of the Erasmus Mundus Joint Masters Program in Pervasive Computing and COMmunication for sustainable development (PERCCOM). This repository contains a Django backend project for the MyAQI tool:
 
  - Users can request live information for Melbourne's Air Quality information.
  - Users can set their profile preferences for customised views and colours.
