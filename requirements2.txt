@@ -20,7 +20,7 @@ django-js-asset==1.2.1
 django-nested-admin==3.2.1
 django-rest-swagger==2.2.0
 django-suit==0.2.26
-djangorestframework==3.9.1
+djangorestframework==3.11.2
 djangorestframework-jwt==1.11.0
 Fabric3==1.14.post1
 -e git+https://dschurholz@bitbucket.org/itelmark/fabutils.git@577e8c83bcc30da59487dbb5b4f94b808f389c1a#egg=fabutils
